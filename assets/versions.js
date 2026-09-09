@@ -25,7 +25,7 @@ KI.VERSIONS = {
       { key: 'accessory', label: 'アクセサリー', icon: '💍' }
     ],
     fallback: function (color) {
-      var tops = ['ニット', 'カットソー', 'シャツ', 'カーディガン', 'ブラウス'];
+      var tops = ['Tシャツ', 'ニット', 'カットソー', 'シャツ', 'カーディガン'];
       var items = ['トートバッグ', 'ストール', 'キャップ', '靴下', 'ハンカチ'];
       var accs = ['ピアス', 'ネックレス', 'ヘアゴム', 'ブレスレット', '腕時計のベルト'];
       return {

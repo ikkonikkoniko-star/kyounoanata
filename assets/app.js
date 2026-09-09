@@ -61,7 +61,7 @@ KI.init = function (versionId) {
   var stage = el('section', 'ki-stage');
   var bubble = el('div', 'ki-bubble', version.question);
   var figure = el('div', 'ki-figure');
-  figure.innerHTML = KI.renderCharacter(null);
+  figure.innerHTML = KI.renderCharacter(null, versionId);
   stage.appendChild(bubble);
   stage.appendChild(figure);
   main.appendChild(stage);
@@ -127,7 +127,7 @@ KI.init = function (versionId) {
 
   function show(feeling, data) {
     var color = data.color;
-    figure.innerHTML = KI.renderCharacter(color.hex);
+    figure.innerHTML = KI.renderCharacter(color.hex, versionId);
     chipWrap.hidden = true;
     result.hidden = false;
     result.innerHTML = '';
@@ -180,7 +180,7 @@ KI.init = function (versionId) {
     result.innerHTML = '';
     chipWrap.hidden = false;
     freeInput.value = '';
-    figure.innerHTML = KI.renderCharacter(null);
+    figure.innerHTML = KI.renderCharacter(null, versionId);
     document.documentElement.style.removeProperty('--ki-accent');
     bubble.textContent = version.question;
     stage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
