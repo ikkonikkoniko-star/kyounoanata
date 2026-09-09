@@ -172,20 +172,30 @@ function pen(fill, line, capFill, cx) {
  * 男女どちらにも見えるように、髪は左右対称のまるい形、
  * 肩幅と胴はやや細めにしている。 */
 
-var ADULT_TSHIRT = 'M120 84c-13 0-24 4-30 8l-11 26a4 4 0 0 0 2 5l10 3 4-11v44a3 3 0 0 0 3 3h44a3 3 0 0 0 3-3v-44l4 11 10-3a4 4 0 0 0 2-5l-11-26c-6-4-17-8-30-8z';
+/* Tシャツ。bodyLen で裾の高さ＝ウエスト位置を変えられる */
+function adultTshirt(bodyLen) {
+  return 'M120 84c-13 0-24 4-30 8l-11 26a4 4 0 0 0 2 5l10 3 4-11v' + bodyLen +
+    'a3 3 0 0 0 3 3h44a3 3 0 0 0 3-3v-' + bodyLen + 'l4 11 10-3a4 4 0 0 0 2-5l-11-26c-6-4-17-8-30-8z';
+}
 
-function adultHeadAndLegs(legFill, legLine) {
-  return [
-    /* 脚 */
-    '<path d="M95 159h50v32l-4 62h-17l-4-52-4 52h-17l-4-62z" fill="' + legFill +
-      '" stroke="' + legLine + '" stroke-width="3" stroke-linejoin="round"/>',
-    '<path d="M95 172h50" fill="none" stroke="' + legLine + '" stroke-width="2.5"/>',
-    /* 靴 */
-    '<rect x="96" y="248" width="23" height="11" rx="5.5" fill="' + LINE + '"/>',
-    '<rect x="121" y="248" width="23" height="11" rx="5.5" fill="' + LINE + '"/>',
-    /* 首 */
-    '<rect x="113" y="60" width="14" height="28" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>'
-  ].join('');
+/* 素肌の腕と手。袖から下に出す。
+ * 手は腕より少し太くして、手首の位置で腕の輪郭が重なるようにする
+ * （同じ太さだと1本の筒に見えてしまう）。 */
+function bareArm(cx, handY, deg) {
+  return '<g transform="rotate(' + deg + ' ' + cx + ' ' + (handY - 50) + ')">' +
+    '<circle cx="' + cx + '" cy="' + handY + '" r="8.5" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>' +
+    '<rect x="' + (cx - 7) + '" y="112" width="14" height="' + (handY - 116) + '" rx="7" fill="' + FACE +
+      '" stroke="' + LINE + '" stroke-width="3"/>' +
+    '</g>';
+}
+
+function adultLegs(legFill, legLine, d, bandY) {
+  return '<path d="' + d + '" fill="' + legFill + '" stroke="' + legLine +
+      '" stroke-width="3" stroke-linejoin="round"/>' +
+    '<path d="M95 ' + bandY + 'h50" fill="none" stroke="' + legLine + '" stroke-width="2.5"/>' +
+    '<rect x="96" y="248" width="23" height="11" rx="5.5" fill="' + LINE + '"/>' +
+    '<rect x="121" y="248" width="23" height="11" rx="5.5" fill="' + LINE + '"/>' +
+    '<rect x="113" y="60" width="14" height="28" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>';
 }
 
 /* 左右対称のまるい髪。頭のてっぺんを覆い、耳のあたりまで下りる。
@@ -202,9 +212,10 @@ function adultFace() {
     '<path d="M114 59c3 4 9 4 12 0" fill="none" stroke="' + LINE + '" stroke-width="2.8" stroke-linecap="round"/>';
 }
 
+/* 髪は頭の輪郭がはみ出さない大きさにする（いちばん幅の広いところで接する） */
 function kidsFace() {
   return '<circle cx="120" cy="66" r="42" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>' +
-    neutralHair('M82 70C82 5 158 5 158 70Q149 50 120 50Q91 50 82 70Z') +
+    neutralHair('M78 66C78 6 162 6 162 66Q152 48 120 48Q88 48 78 66Z') +
     '<circle cx="106" cy="66" r="3.4" fill="' + LINE + '"/>' +
     '<circle cx="134" cy="66" r="3.4" fill="' + LINE + '"/>' +
     '<path d="M110 81c4 5 16 5 20 0" fill="none" stroke="' + LINE + '" stroke-width="3" stroke-linecap="round"/>';
@@ -225,39 +236,47 @@ function kidsFigure(tops, topsLine) {
     '<path d="M88 188h64" fill="none" stroke="' + DENIM_LINE + '" stroke-width="2.5"/>',
     /* 首とTシャツ */
     '<path d="M110 100h20v14h-20z" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>',
+    /* 腕と手（Tシャツの下に描いて、袖で肩側を隠す） */
+    '<g transform="rotate(-3 76 175)">' +
+      '<circle cx="76" cy="200" r="9.5" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>' +
+      '<rect x="68" y="150" width="16" height="46" rx="8" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>' +
+      '</g>',
+    '<g transform="rotate(3 164 175)">' +
+      '<circle cx="164" cy="200" r="9.5" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>' +
+      '<rect x="156" y="150" width="16" height="46" rx="8" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>' +
+      '</g>',
     '<path id="ki-tops" d="M120 112c-16 0-30 5-38 12l-14 34a5 5 0 0 0 3 6l12 4 5-14v22a4 4 0 0 0 4 4h56a4 4 0 0 0 4-4v-22l5 14 12-4a5 5 0 0 0 3-6l-14-34c-8-7-22-12-38-12z" fill="' + tops +
       '" stroke="' + topsLine + '" stroke-width="3" stroke-linejoin="round"/>',
     kidsFace()
   ].join('');
 }
 
-/* Tシャツ＋デニム（個人Ver） */
+/* Tシャツ＋デニム（個人Ver）。ウエストは高めにとる */
 function personalFigure(tops, topsLine) {
-  return adultHeadAndLegs(DENIM, DENIM_LINE) +
-    '<path id="ki-tops" d="' + ADULT_TSHIRT + '" fill="' + tops +
+  return adultLegs(DENIM, DENIM_LINE, 'M95 147h50v38l-4 68h-17l-4-56-4 56h-17l-4-68z', 160) +
+    bareArm(86, 178, -3) +
+    bareArm(154, 178, 3) +
+    '<path id="ki-tops" d="' + adultTshirt(32) + '" fill="' + tops +
       '" stroke="' + topsLine + '" stroke-width="3" stroke-linejoin="round"/>' +
     adultFace();
 }
 
 /* ジャケットの前腕。手は袖口から少しだけ出す */
-function jacketArm(x, cx, deg) {
-  return '<g transform="rotate(' + deg + ' ' + cx + ' 138)">' +
-    '<circle cx="' + cx + '" cy="160" r="7.5" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>' +
-    '<rect x="' + x + '" y="112" width="17" height="46" rx="8" fill="' + SUIT +
-      '" stroke="' + SUIT_LINE + '" stroke-width="3"/>' +
-    '</g>';
+function jacketSleeve(d, handX) {
+  return '<circle cx="' + handX + '" cy="176" r="8.5" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>' +
+    '<path d="' + d + '" fill="' + SUIT + '" stroke="' + SUIT_LINE + '" stroke-width="3" stroke-linejoin="round"/>';
 }
 
 /* Tシャツ＋ジャケット（ビジネスVer）。ジャケットは前を開けて中のTシャツを見せる */
 function businessFigure(tops, topsLine) {
-  return adultHeadAndLegs(SUIT, SUIT_LINE) +
-    '<path id="ki-tops" d="' + ADULT_TSHIRT + '" fill="' + tops +
+  return adultLegs(SUIT, SUIT_LINE, 'M95 159h50v32l-4 62h-17l-4-52-4 52h-17l-4-62z', 172) +
+    '<path id="ki-tops" d="' + adultTshirt(44) + '" fill="' + tops +
       '" stroke="' + topsLine + '" stroke-width="3" stroke-linejoin="round"/>' +
-    jacketArm(77, 85.5, -4) +
-    jacketArm(146, 154.5, 4) +
-    '<path d="M103 86 L90 92 L79 118 L81 123 L91 126 L95 115 L95 162 L113 162 L113 111 Z" fill="' + SUIT +
+    jacketSleeve('M94 91 L77 122 L79 168 Q87 174 95 168 L98 122 L101 92 Z', 87) +
+    jacketSleeve('M146 91 L163 122 L161 168 Q153 174 145 168 L142 122 L139 92 Z', 153) +
+    '<path d="M103 86 L91 90 L97 120 L97 162 L113 162 L113 111 Z" fill="' + SUIT +
       '" stroke="' + SUIT_LINE + '" stroke-width="3" stroke-linejoin="round"/>' +
-    '<path d="M137 86 L150 92 L161 118 L159 123 L149 126 L145 115 L145 162 L127 162 L127 111 Z" fill="' + SUIT +
+    '<path d="M137 86 L149 90 L143 120 L143 162 L127 162 L127 111 Z" fill="' + SUIT +
       '" stroke="' + SUIT_LINE + '" stroke-width="3" stroke-linejoin="round"/>' +
     adultFace();
 }
