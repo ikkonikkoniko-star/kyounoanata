@@ -23,7 +23,7 @@ var STRUCTURED_OUTPUT_MODELS = [
 var RESPONSE_SCHEMA = {
   type: 'object',
   properties: {
-    color_name: { type: 'string', enum: [] },   /* 起動時に24色で埋める */
+    color_name: { type: 'string', enum: [] },   /* 呼び出し時にパレットの色名で埋める */
     message: { type: 'string' },
     tops: { type: 'string' },
     item: { type: 'string' },
@@ -47,6 +47,7 @@ KI.setApiKey = function (key) {
 
 function buildPrompt(version, feeling) {
   var names = KI.PALETTE.map(function (c) { return c.name; }).join('、');
+  var count = KI.PALETTE.length;
   var slots = version.slots;
   return [
     'あなたは色彩心理にくわしいスタイリストです。',
@@ -54,14 +55,14 @@ function buildPrompt(version, feeling) {
     '',
     '【今日の気持ち】' + feeling,
     '',
-    '【色の選択肢】次の24色からちょうど1つを選び、色名は一字一句このまま使ってください。',
+    '【色の選択肢】次の' + count + '色からちょうど1つを選び、色名は一字一句このまま使ってください。',
     names,
     '',
     '【口調】' + version.tone,
     '',
     '【出力】次のキーだけを持つJSONオブジェクトをそのまま返してください。前後に説明文やコードブロックは付けないこと。',
     '{',
-    '  "color_name": "24色から選んだ色名",',
+    '  "color_name": "' + count + '色から選んだ色名",',
     '  "message": "気持ちに寄り添う一言。40〜60字程度。",',
     '  "meaning": "その色が心理的に持つ意味。40〜70字程度。",',
     '  "tops": "' + slots[0].label + 'にその色を取り入れる具体案。60〜90字程度。",',
@@ -70,7 +71,7 @@ function buildPrompt(version, feeling) {
     '}',
     '',
     '提案は「何を・どこに・どのくらいの面積で」が想像できる具体的なものにしてください。',
-    '色名そのものを言い換えたり、24色にない色を持ち出したりしないでください。'
+    '色名そのものを言い換えたり、この' + count + '色にない色を持ち出したりしないでください。'
   ].join('\n');
 }
 

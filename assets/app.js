@@ -196,7 +196,7 @@ function buildSettings() {
   var body = el('div', 'ki-settings-body');
   body.appendChild(el('p', 'ki-settings-note',
     'Claude API のキーを入れると、色と提案文を毎回 Claude が考えます。' +
-    '未設定のままでも、24色のローカル辞書で動きます。' +
+    '未設定のままでも、' + KI.PALETTE.length + '色のローカル辞書で動きます。' +
     'キーはこの端末のブラウザにだけ保存されますが、ページを開いた人からは読み取れます。' +
     '公開サイトに置く場合は、キーをサーバー側で預かる構成に変えてください。'));
 
