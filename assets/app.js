@@ -80,16 +80,6 @@ KI.init = function (versionId) {
   });
   chipWrap.appendChild(chips);
 
-  var freeWrap = el('div', 'ki-free');
-  var freeInput = el('input', 'ki-free-input');
-  freeInput.type = 'text';
-  freeInput.placeholder = '自分のことばで書いてもOK';
-  freeInput.setAttribute('aria-label', '今日どんな自分でいたいか');
-  freeInput.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' && freeInput.value.trim()) run(freeInput.value.trim());
-  });
-  freeWrap.appendChild(freeInput);
-  chipWrap.appendChild(freeWrap);
   panel.appendChild(chipWrap);
 
   var result = el('div', 'ki-result');
@@ -106,7 +96,6 @@ KI.init = function (versionId) {
     chipWrap.classList.toggle('is-busy', on);
     bubble.textContent = on ? '……いま考えています' : version.question;
     Array.prototype.forEach.call(chips.children, function (b) { b.disabled = on; });
-    freeInput.disabled = on;
   }
 
   function run(feeling) {
@@ -156,11 +145,6 @@ KI.init = function (versionId) {
     howto.appendChild(el('p', 'ki-howto-body', data.howto));
     result.appendChild(howto);
 
-    var meaning = el('div', 'ki-meaning');
-    meaning.appendChild(el('h2', 'ki-meaning-title', color.name + ' の意味'));
-    meaning.appendChild(el('p', 'ki-meaning-body', data.meaning));
-    result.appendChild(meaning);
-
     if (data.source === 'local') {
       result.appendChild(el('p', 'ki-badge', 'オフライン辞書で表示しています（APIキー未設定、または通信に失敗しました）'));
     }
@@ -177,7 +161,6 @@ KI.init = function (versionId) {
     result.hidden = true;
     result.innerHTML = '';
     chipWrap.hidden = false;
-    freeInput.value = '';
     figure.innerHTML = KI.renderCharacter(null, versionId);
     document.documentElement.style.removeProperty('--ki-accent');
     bubble.textContent = version.question;

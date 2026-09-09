@@ -24,11 +24,9 @@ var RESPONSE_SCHEMA = {
   type: 'object',
   properties: {
     color_name: { type: 'string', enum: [] },   /* 呼び出し時にパレットの色名で埋める */
-    message: { type: 'string' },
-    howto: { type: 'string' },
-    meaning: { type: 'string' }
+    howto: { type: 'string' }
   },
-  required: ['color_name', 'message', 'howto', 'meaning'],
+  required: ['color_name', 'howto'],
   additionalProperties: false
 };
 
@@ -43,8 +41,14 @@ KI.setApiKey = function (key) {
   } catch (e) { /* プライベートモード等では保存できない。無視して続行する。 */ }
 };
 
+/* 一言は色名から組み立てる決まり文句。モデルには作らせない。 */
+KI.messageFor = function (color) {
+  return 'きょうは' + color.name + 'のちからをかりてみましょう。';
+};
+
 function buildPrompt(version, feeling) {
-  var names = KI.PALETTE.map(function (c) { return c.name; }).join('、');
+  /* 色の意味も一緒に渡して、色の力の話がこちらの文言から外れないようにする */
+  var list = KI.PALETTE.map(function (c) { return c.name + '：' + c.meaning; }).join('\n');
   var count = KI.PALETTE.length;
   return [
     'あなたは色彩心理にくわしいスタイリストです。',
@@ -53,7 +57,7 @@ function buildPrompt(version, feeling) {
     '【今日の気持ち】' + feeling,
     '',
     '【色の選択肢】次の' + count + '色からちょうど1つを選び、色名は一字一句このまま使ってください。',
-    names,
+    list,
     '',
     '【口調】' + version.tone,
     '',
@@ -62,14 +66,17 @@ function buildPrompt(version, feeling) {
     '【出力】次のキーだけを持つJSONオブジェクトをそのまま返してください。前後に説明文やコードブロックは付けないこと。',
     '{',
     '  "color_name": "' + count + '色から選んだ色名",',
-    '  "message": "気持ちに寄り添う一言。40〜60字程度。",',
-    '  "meaning": "その色が心理的に持つ意味。40〜70字程度。",',
-    '  "howto": "その色を身のまわりにどう取り入れるかの提案。2〜3文、100〜140字程度。"',
+    '  "howto": "その色を今日どう楽しむかの文章。3〜4文、130〜170字程度。"',
     '}',
     '',
-    'howto は箇条書きにせず、ひとつづきの文章にしてください。',
-    '「何を・どこに・どのくらいの面積で」が想像できるように、大きく見える部分と小さな部分の両方に触れ、',
-    '全部そろえなくてよいことも一言添えてください。',
+    'howto は箇条書きにせず、ひとつづきの文章にして、次の順で書いてください。',
+    '1. 着る服にその色を取り入れる提案',
+    '2. ハンカチなどの小物にその色を取り入れる提案',
+    '3. その色の意味と、その色が持つ力の話（上の一覧に書かれた内容に沿って）',
+    '4. 「今日もきっとうまくいく！」のような、前向きで軽やかな締めの一文',
+    '',
+    '読んだ人が「色って面白い」「今日やってみよう」と思える、明るい調子にしてください。',
+    'こまかい着こなし指南にはせず、気軽に試せる範囲にとどめること。',
     '色名そのものを言い換えたり、この' + count + '色にない色を持ち出したりしないでください。'
   ].join('\n');
 }
@@ -139,8 +146,7 @@ KI.askClaude = function (version, feeling) {
     return {
       source: 'api',
       color: color,
-      message: parsed.message || '',
-      meaning: parsed.meaning || color.meaning,
+      message: KI.messageFor(color),
       howto: parsed.howto || ''
     };
   });
@@ -149,12 +155,10 @@ KI.askClaude = function (version, feeling) {
 /* API を使わずローカル辞書だけで結果を作る */
 KI.askLocal = function (version, feeling) {
   var color = KI.matchColor(feeling);
-  var f = version.fallback(color);
   return {
     source: 'local',
     color: color,
-    message: f.message,
-    meaning: color.meaning,
-    howto: f.howto
+    message: KI.messageFor(color),
+    howto: version.fallback(color)
   };
 };
