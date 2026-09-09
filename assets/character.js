@@ -62,6 +62,7 @@ var DENIM = '#4A6FA5';
 var DENIM_LINE = '#31507C';
 var SUIT = '#3C4048';
 var SUIT_LINE = '#23262C';
+var HAIR = '#4A3F38';
 
 /* しろ など明るすぎる色でも輪郭が消えないように少しだけ締める */
 function outlineFor(hex) {
@@ -111,85 +112,122 @@ function decorations(hex, slots) {
   return out;
 }
 
-/* ---------------- 横に置く小物 ---------------- */
+/* ---------------- 横に置く小物 ----------------
+ * どれも cx を中心に置けるように、基準の形を cx=54 で描いて平行移動する。 */
 
-/* 左：ハンカチ（個人Ver・キッズVer） */
-function handkerchief(fill, line) {
-  return '<g transform="rotate(-8 54 172)">' +
-    '<rect x="22" y="140" width="64" height="64" rx="10" fill="' + fill + '" stroke="' + line + '" stroke-width="3"/>' +
-    '<rect x="32" y="150" width="44" height="44" rx="6" fill="none" stroke="' + line + '" stroke-width="2" stroke-dasharray="5 5"/>' +
-    '</g>';
+function at(cx, inner) {
+  return '<g transform="translate(' + (cx - 54) + ' 0)">' + inner + '</g>';
 }
 
-/* 右：バッグ（個人Ver・キッズVer） */
-function bag(fill, line) {
-  return '<path d="M266 158c0-28 32-28 32 0" fill="none" stroke="' + line + '" stroke-width="3.5" stroke-linecap="round"/>' +
-    '<rect x="254" y="156" width="64" height="54" rx="9" fill="' + fill + '" stroke="' + line + '" stroke-width="3"/>';
+/* ハンカチ。上向きの正方形＋破線はぞうきんに見えてしまうので、
+ * ひし形に傾けて、内側にひと回り小さい縁取りを入れる。 */
+function handkerchief(fill, line, cx) {
+  return at(cx, '<g transform="rotate(42 54 172)">' +
+    '<rect x="29" y="147" width="50" height="50" rx="7" fill="' + fill +
+      '" stroke="' + line + '" stroke-width="3"/>' +
+    '<rect x="38" y="156" width="32" height="32" rx="4" fill="none" stroke="' + line + '" stroke-width="1.8"/>' +
+    '</g>');
 }
 
-/* 左：腕時計（ビジネスVer）。色が変わるのはベルト、文字盤は白のまま */
-function watch(fill, line) {
-  return '<rect x="44" y="124" width="21" height="34" rx="5" fill="' + fill + '" stroke="' + line + '" stroke-width="3"/>' +
-    '<rect x="44" y="184" width="21" height="34" rx="5" fill="' + fill + '" stroke="' + line + '" stroke-width="3"/>' +
+/* 靴下。履き口の縦リブがないとブーツに見えるので、そこを描き分ける。 */
+function sock(fill, line, cx) {
+  return at(cx, '<g transform="rotate(-4 54 170)">' +
+    '<path d="M42 130h26v52h18a12 12 0 0 1 0 24H42a12 12 0 0 1-12-12v-52a12 12 0 0 1 12-12z" fill="' + fill +
+      '" stroke="' + line + '" stroke-width="3" stroke-linejoin="round"/>' +
+    '<path d="M31 152h37" fill="none" stroke="' + line + '" stroke-width="2.5"/>' +
+    '<path d="M39 134v16M48 133v17M57 134v16" fill="none" stroke="' + line + '" stroke-width="2"/>' +
+    '</g>');
+}
+
+/* バッグ */
+function bag(fill, line, cx) {
+  return at(cx, '<path d="M38 158c0-28 32-28 32 0" fill="none" stroke="' + line +
+      '" stroke-width="3.5" stroke-linecap="round"/>' +
+    '<rect x="22" y="156" width="64" height="54" rx="9" fill="' + fill +
+      '" stroke="' + line + '" stroke-width="3"/>');
+}
+
+/* 腕時計。色が変わるのはベルトで、文字盤は白のまま */
+function watch(fill, line, cx) {
+  return at(cx, '<rect x="44" y="124" width="21" height="34" rx="5" fill="' + fill +
+      '" stroke="' + line + '" stroke-width="3"/>' +
+    '<rect x="44" y="184" width="21" height="34" rx="5" fill="' + fill +
+      '" stroke="' + line + '" stroke-width="3"/>' +
     '<rect x="75" y="165" width="7" height="12" rx="2.5" fill="' + line + '"/>' +
     '<circle cx="54" cy="171" r="22" fill="' + FACE + '" stroke="' + line + '" stroke-width="3"/>' +
-    '<path d="M54 171V158M54 171l9 6" fill="none" stroke="' + line + '" stroke-width="2.5" stroke-linecap="round"/>';
+    '<path d="M54 171V158M54 171l9 6" fill="none" stroke="' + line + '" stroke-width="2.5" stroke-linecap="round"/>');
 }
 
-/* 右：ペン（ビジネスVer） */
-function pen(fill, line, capFill) {
-  return '<g transform="rotate(18 286 172)">' +
-    '<rect x="277" y="128" width="19" height="78" rx="6" fill="' + fill + '" stroke="' + line + '" stroke-width="3"/>' +
-    '<path d="M277 202h19l-9.5 20z" fill="' + fill + '" stroke="' + line + '" stroke-width="3" stroke-linejoin="round"/>' +
-    '<rect x="277" y="128" width="19" height="26" rx="6" fill="' + capFill + '" stroke="' + line + '" stroke-width="3"/>' +
-    '<rect x="292" y="134" width="7" height="21" rx="3" fill="' + capFill + '" stroke="' + line + '" stroke-width="2.5"/>' +
-    '</g>';
+/* ペン */
+function pen(fill, line, capFill, cx) {
+  return at(cx, '<g transform="rotate(18 54 172)">' +
+    '<rect x="45" y="128" width="19" height="78" rx="6" fill="' + fill + '" stroke="' + line + '" stroke-width="3"/>' +
+    '<path d="M45 202h19l-9.5 20z" fill="' + fill + '" stroke="' + line + '" stroke-width="3" stroke-linejoin="round"/>' +
+    '<rect x="45" y="128" width="19" height="26" rx="6" fill="' + capFill + '" stroke="' + line + '" stroke-width="3"/>' +
+    '<rect x="60" y="134" width="7" height="21" rx="3" fill="' + capFill + '" stroke="' + line + '" stroke-width="2.5"/>' +
+    '</g>');
 }
 
-/* ---------------- 人物 ---------------- */
+/* ---------------- 人物 ----------------
+ * 男女どちらにも見えるように、髪は左右対称のまるい形、
+ * 肩幅と胴はやや細めにしている。 */
 
-/* 大人寄りの等身の、顔・首・脚。個人Verとビジネスverで共通 */
+var ADULT_TSHIRT = 'M120 84c-13 0-24 4-30 8l-11 26a4 4 0 0 0 2 5l10 3 4-11v44a3 3 0 0 0 3 3h44a3 3 0 0 0 3-3v-44l4 11 10-3a4 4 0 0 0 2-5l-11-26c-6-4-17-8-30-8z';
+
 function adultHeadAndLegs(legFill, legLine) {
   return [
     /* 脚 */
-    '<path d="M91 160h58v34l-5 66h-19l-5-56-5 56h-19l-5-66z" fill="' + legFill +
+    '<path d="M95 159h50v32l-4 62h-17l-4-52-4 52h-17l-4-62z" fill="' + legFill +
       '" stroke="' + legLine + '" stroke-width="3" stroke-linejoin="round"/>',
-    '<path d="M91 173h58" fill="none" stroke="' + legLine + '" stroke-width="2.5"/>',
+    '<path d="M95 172h50" fill="none" stroke="' + legLine + '" stroke-width="2.5"/>',
     /* 靴 */
-    '<rect x="90" y="255" width="27" height="11" rx="5.5" fill="' + LINE + '"/>',
-    '<rect x="123" y="255" width="27" height="11" rx="5.5" fill="' + LINE + '"/>',
+    '<rect x="96" y="248" width="23" height="11" rx="5.5" fill="' + LINE + '"/>',
+    '<rect x="121" y="248" width="23" height="11" rx="5.5" fill="' + LINE + '"/>',
     /* 首 */
     '<rect x="113" y="60" width="14" height="28" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>'
   ].join('');
 }
 
-function adultFace() {
-  return [
-    '<circle cx="120" cy="48" r="25" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>',
-    '<path d="M102 43c6-13 30-15 36-5" fill="none" stroke="' + LINE + '" stroke-width="3" stroke-linecap="round"/>',
-    '<circle cx="111" cy="49" r="2.6" fill="' + LINE + '"/>',
-    '<circle cx="129" cy="49" r="2.6" fill="' + LINE + '"/>',
-    '<path d="M114 58c3 4 9 4 12 0" fill="none" stroke="' + LINE + '" stroke-width="2.8" stroke-linecap="round"/>'
-  ].join('');
+/* 左右対称のまるい髪。頭のてっぺんを覆い、耳のあたりまで下りる。
+ * 短すぎず長すぎない形にして、どちらの性別にも寄せない。 */
+function neutralHair(d) {
+  return '<path d="' + d + '" fill="' + HAIR + '" stroke="' + LINE + '" stroke-width="3" stroke-linejoin="round"/>';
 }
 
-var ADULT_TSHIRT = 'M120 83c-15 0-27 4-34 9l-12 27a4 4 0 0 0 2 5l11 3 4-11v44a3 3 0 0 0 3 3h52a3 3 0 0 0 3-3v-44l4 11 11-3a4 4 0 0 0 2-5l-12-27c-7-5-19-9-34-9z';
+function adultFace() {
+  return '<circle cx="120" cy="48" r="25" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>' +
+    neutralHair('M96 52C96 11 144 11 144 52Q139 42 120 42Q101 42 96 52Z') +
+    '<circle cx="111" cy="50" r="2.6" fill="' + LINE + '"/>' +
+    '<circle cx="129" cy="50" r="2.6" fill="' + LINE + '"/>' +
+    '<path d="M114 59c3 4 9 4 12 0" fill="none" stroke="' + LINE + '" stroke-width="2.8" stroke-linecap="round"/>';
+}
 
-/* 頭の大きい丸い等身（キッズVer） */
+function kidsFace() {
+  return '<circle cx="120" cy="66" r="42" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>' +
+    neutralHair('M82 70C82 5 158 5 158 70Q149 50 120 50Q91 50 82 70Z') +
+    '<circle cx="106" cy="66" r="3.4" fill="' + LINE + '"/>' +
+    '<circle cx="134" cy="66" r="3.4" fill="' + LINE + '"/>' +
+    '<path d="M110 81c4 5 16 5 20 0" fill="none" stroke="' + LINE + '" stroke-width="3" stroke-linecap="round"/>';
+}
+
+/* Tシャツ＋クロップドパンツ（キッズVer）。頭の大きい丸い等身のまま。
+ * ワンピースに見えないよう、トップスは腰までで切ってパンツを見せる。 */
 function kidsFigure(tops, topsLine) {
   return [
-    '<rect x="102" y="204" width="14" height="52" rx="7" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>',
-    '<rect x="124" y="204" width="14" height="52" rx="7" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>',
-    '<path d="M99 256h20a4 4 0 0 1 4 4v4H99z" fill="' + LINE + '"/>',
-    '<path d="M121 256h20a4 4 0 0 1 4 4v4h-24z" fill="' + LINE + '"/>',
-    '<path id="ki-tops" d="M120 112c-16 0-30 5-38 12l-14 34a5 5 0 0 0 3 6l12 4 5-14v56a4 4 0 0 0 4 4h56a4 4 0 0 0 4-4v-56l5 14 12-4a5 5 0 0 0 3-6l-14-34c-8-7-22-12-38-12z" fill="' + tops +
-      '" stroke="' + topsLine + '" stroke-width="3" stroke-linejoin="round"/>',
+    /* 素足とくつ */
+    '<rect x="95" y="220" width="16" height="32" rx="8" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>',
+    '<rect x="129" y="220" width="16" height="32" rx="8" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>',
+    '<rect x="92" y="246" width="23" height="11" rx="5.5" fill="' + LINE + '"/>',
+    '<rect x="125" y="246" width="23" height="11" rx="5.5" fill="' + LINE + '"/>',
+    /* クロップドパンツ */
+    '<path d="M88 176h64v18l-5 36h-20l-7-32-7 32H93l-5-36z" fill="' + DENIM +
+      '" stroke="' + DENIM_LINE + '" stroke-width="3" stroke-linejoin="round"/>',
+    '<path d="M88 188h64" fill="none" stroke="' + DENIM_LINE + '" stroke-width="2.5"/>',
+    /* 首とTシャツ */
     '<path d="M110 100h20v14h-20z" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>',
-    '<circle cx="120" cy="66" r="42" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>',
-    '<path d="M84 44c8-16 44-20 60-6" fill="none" stroke="' + LINE + '" stroke-width="3" stroke-linecap="round"/>',
-    '<circle cx="106" cy="64" r="3.4" fill="' + LINE + '"/>',
-    '<circle cx="134" cy="64" r="3.4" fill="' + LINE + '"/>',
-    '<path d="M110 79c4 5 16 5 20 0" fill="none" stroke="' + LINE + '" stroke-width="3" stroke-linecap="round"/>'
+    '<path id="ki-tops" d="M120 112c-16 0-30 5-38 12l-14 34a5 5 0 0 0 3 6l12 4 5-14v22a4 4 0 0 0 4 4h56a4 4 0 0 0 4-4v-22l5 14 12-4a5 5 0 0 0 3-6l-14-34c-8-7-22-12-38-12z" fill="' + tops +
+      '" stroke="' + topsLine + '" stroke-width="3" stroke-linejoin="round"/>',
+    kidsFace()
   ].join('');
 }
 
@@ -201,8 +239,7 @@ function personalFigure(tops, topsLine) {
     adultFace();
 }
 
-/* ジャケットの前腕。肩から袖口までを Tシャツと同じ肩線のまま長袖に見せる。
- * 手は袖口から少しだけ出す。 */
+/* ジャケットの前腕。手は袖口から少しだけ出す */
 function jacketArm(x, cx, deg) {
   return '<g transform="rotate(' + deg + ' ' + cx + ' 138)">' +
     '<circle cx="' + cx + '" cy="160" r="7.5" fill="' + FACE + '" stroke="' + LINE + '" stroke-width="3"/>' +
@@ -216,22 +253,20 @@ function businessFigure(tops, topsLine) {
   return adultHeadAndLegs(SUIT, SUIT_LINE) +
     '<path id="ki-tops" d="' + ADULT_TSHIRT + '" fill="' + tops +
       '" stroke="' + topsLine + '" stroke-width="3" stroke-linejoin="round"/>' +
-    jacketArm(74, 82.5, -4) +
-    jacketArm(149, 157.5, 4) +
-    '<path d="M102 85 L88 91 L74 119 L76 124 L87 127 L91 116 L91 163 L112 163 L112 112 Z" fill="' + SUIT +
+    jacketArm(77, 85.5, -4) +
+    jacketArm(146, 154.5, 4) +
+    '<path d="M103 86 L90 92 L79 118 L81 123 L91 126 L95 115 L95 162 L113 162 L113 111 Z" fill="' + SUIT +
       '" stroke="' + SUIT_LINE + '" stroke-width="3" stroke-linejoin="round"/>' +
-    '<path d="M138 85 L152 91 L166 119 L164 124 L153 127 L149 116 L149 163 L128 163 L128 112 Z" fill="' + SUIT +
+    '<path d="M137 86 L150 92 L161 118 L159 123 L149 126 L145 115 L145 162 L127 162 L127 111 Z" fill="' + SUIT +
       '" stroke="' + SUIT_LINE + '" stroke-width="3" stroke-linejoin="round"/>' +
     adultFace();
 }
 
-/* 装飾を置ける場所は絵の構成で変わる */
-var DECO_SLOTS = {
-  adult: [[30, 40], [95, 20], [245, 20], [312, 40], [26, 88],
-          [316, 88], [34, 248], [110, 284], [232, 284], [310, 252]],
-  kids:  [[26, 38], [88, 20], [252, 20], [314, 38], [20, 96],
-          [320, 96], [30, 244], [108, 276], [232, 276], [312, 244]]
-};
+/* 人物と小物のどれとも重ならない外周のスロット */
+var DECO_SLOTS = [
+  [30, 40], [95, 20], [245, 20], [312, 40], [26, 88],
+  [316, 88], [34, 248], [110, 284], [232, 284], [310, 252]
+];
 
 /* hex が null のときは無色（Tシャツがまだ塗られていない）状態を描く。
  * viewBox は 340x300。人物は translate(50,0) で中央に寄せ、
@@ -248,22 +283,27 @@ KI.renderCharacter = function (hex, versionId) {
   var isKids = versionId === 'kids';
   var isBusiness = versionId === 'business';
 
+  var items = isBusiness ? '左に腕時計、右にペン'
+            : isKids ? '左に靴下、右にハンカチ'
+            : '左にハンカチ、右にバッグ';
   var label = colored
-    ? (isBusiness ? '選ばれた色のTシャツを着たキャラクターと、同じ色の腕時計とペン'
-                  : '選ばれた色のTシャツを着たキャラクターと、同じ色のハンカチとバッグ')
+    ? '選ばれた色のTシャツを着たキャラクターと、同じ色の小物（' + items + '）'
     : 'まだ色のついていないキャラクターと小物';
 
   var figure = isKids ? kidsFigure(tops, topsLine)
              : isBusiness ? businessFigure(tops, topsLine)
              : personalFigure(tops, topsLine);
 
-  var leftItem = isBusiness ? watch(left, leftLine) : handkerchief(left, leftLine);
-  var rightItem = isBusiness ? pen(right, rightLine, colored ? KI.shade(hex, -0.5) : BLANK)
-                             : bag(right, rightLine);
+  var leftItem = isBusiness ? watch(left, leftLine, 54)
+               : isKids ? sock(left, leftLine, 54)
+               : handkerchief(left, leftLine, 54);
+  var rightItem = isBusiness ? pen(right, rightLine, colored ? KI.shade(hex, -0.5) : BLANK, 286)
+                : isKids ? handkerchief(right, rightLine, 286)
+                : bag(right, rightLine, 286);
 
   return [
     '<svg class="ki-character" viewBox="0 0 340 300" role="img" aria-label="' + label + '">',
-    decorations(colored ? hex : null, isKids ? DECO_SLOTS.kids : DECO_SLOTS.adult),
+    decorations(colored ? hex : null, DECO_SLOTS),
     leftItem,
     rightItem,
     '<g transform="translate(50 0)">',
