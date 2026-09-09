@@ -1,7 +1,9 @@
 /* キャラクター描画とカラーユーティリティ
- * 丸顔でにこっと笑った、輪郭だけのシンプルな似顔絵。
- * トップス／小物／アクセサリーの3か所に、選ばれた色の濃淡を割り当てる。
- * 人物の周りには同じ色の濃淡違いの丸・四角・三角を散らして賑やかにする。
+ * 丸顔でにこっと笑った、輪郭だけのシンプルな似顔絵。人物は身につけるのは
+ * トップスだけで、アクセサリーもバッグも身につけない。
+ * 小物は人物の横に単体のイラストとして置く（左にハンカチ、右にバッグ）。
+ * 選ばれた色の濃淡を トップス／バッグ／ハンカチ の3か所に割り当てる。
+ * 3つの周りには同じ色の濃淡違いの丸・四角・三角を散らして賑やかにする。
  */
 window.KI = window.KI || {};
 
@@ -65,10 +67,10 @@ function decorations(hex) {
   if (!hex) return '';
   var rnd = seededRandom(KI.hexToRgb(hex).r * 7919 + KI.hexToRgb(hex).g * 104729 + KI.hexToRgb(hex).b + 1);
   var tones = [KI.shade(hex, 0.62), KI.shade(hex, 0.38), KI.shade(hex, 0.12), KI.shade(hex, -0.22)];
-  /* 人物と重ならない外周のスロット */
+  /* 人物・ハンカチ・バッグのどれとも重ならない外周のスロット */
   var slots = [
-    [26, 40], [206, 46], [16, 116], [222, 124], [30, 206],
-    [212, 200], [60, 22], [176, 20], [22, 268], [216, 264]
+    [26, 38], [88, 20], [252, 20], [314, 38], [20, 96],
+    [320, 96], [30, 244], [108, 276], [232, 276], [312, 244]
   ];
   var out = '';
   for (var i = 0; i < slots.length; i++) {
@@ -102,49 +104,53 @@ function decorations(hex) {
 var BLANK = '#ECECEC';
 var LINE = '#2b2b2b';
 
-/* hex が null のときは無色（輪郭だけ）の状態を描く */
+/* hex が null のときは無色（輪郭だけ）の状態を描く。
+ * viewBox は 340x300。人物は translate(50,0) で中央に寄せ、
+ * 左右の空きにハンカチとバッグを単体で置く。 */
 KI.renderCharacter = function (hex) {
   var colored = !!hex;
   var tops = colored ? hex : BLANK;
-  var item = colored ? KI.shade(hex, -0.28) : BLANK;
-  var acc = colored ? KI.shade(hex, 0.45) : BLANK;
+  var bag = colored ? KI.shade(hex, -0.28) : BLANK;
+  var hanky = colored ? KI.shade(hex, 0.45) : BLANK;
   var topsLine = colored ? outlineFor(tops) : LINE;
-  var itemLine = colored ? outlineFor(item) : LINE;
-  var accLine = colored ? outlineFor(acc) : LINE;
+  var bagLine = colored ? outlineFor(bag) : LINE;
+  var hankyLine = colored ? outlineFor(hanky) : LINE;
 
   return [
-    '<svg class="ki-character" viewBox="0 0 240 300" role="img" aria-label="' +
-      (colored ? 'えらばれた色を着たキャラクター' : 'まだ色のついていないキャラクター') + '">',
+    '<svg class="ki-character" viewBox="0 0 340 300" role="img" aria-label="' +
+      (colored ? 'えらばれた色のトップスを着たキャラクターと、同じ色のハンカチとバッグ'
+               : 'まだ色のついていないキャラクターと、ハンカチとバッグ') + '">',
     decorations(colored ? hex : null),
 
-    /* 脚と靴（色は割り当てない） */
+    /* 左：ハンカチ（単体のイラスト） */
+    '<g transform="rotate(-8 54 172)">',
+    '<rect id="ki-hanky" x="22" y="140" width="64" height="64" rx="10" fill="' + hanky + '" stroke="' + hankyLine + '" stroke-width="3"/>',
+    '<rect x="32" y="150" width="44" height="44" rx="6" fill="none" stroke="' + hankyLine + '" stroke-width="2" stroke-dasharray="5 5"/>',
+    '</g>',
+
+    /* 右：バッグ（単体のイラスト。人物には掛けない） */
+    '<path d="M270 158c0-28 32-28 32 0" fill="none" stroke="' + bagLine + '" stroke-width="3.5" stroke-linecap="round" transform="translate(-4 0)"/>',
+    '<rect id="ki-bag" x="254" y="156" width="64" height="54" rx="9" fill="' + bag + '" stroke="' + bagLine + '" stroke-width="3"/>',
+
+    /* 中央：人物。トップス以外は身につけない */
+    '<g transform="translate(50 0)">',
+
     '<rect x="102" y="204" width="14" height="52" rx="7" fill="#fff" stroke="' + LINE + '" stroke-width="3"/>',
     '<rect x="124" y="204" width="14" height="52" rx="7" fill="#fff" stroke="' + LINE + '" stroke-width="3"/>',
     '<path d="M99 256h20a4 4 0 0 1 4 4v4H99z" fill="' + LINE + '"/>',
     '<path d="M121 256h20a4 4 0 0 1 4 4v4h-24z" fill="' + LINE + '"/>',
 
-    /* トップス（本体の色） */
     '<path id="ki-tops" d="M120 112c-16 0-30 5-38 12l-14 34a5 5 0 0 0 3 6l12 4 5-14v56a4 4 0 0 0 4 4h56a4 4 0 0 0 4-4v-56l5 14 12-4a5 5 0 0 0 3-6l-14-34c-8-7-22-12-38-12z" fill="' + tops + '" stroke="' + topsLine + '" stroke-width="3" stroke-linejoin="round"/>',
 
-    /* 首 */
     '<path d="M110 100h20v14h-20z" fill="#fff" stroke="' + LINE + '" stroke-width="3"/>',
 
-    /* 小物：ショルダーバッグ */
-    '<path id="ki-item-strap" d="M104 118c8 22 26 32 42 34" fill="none" stroke="' + itemLine + '" stroke-width="4" stroke-linecap="round"/>',
-    '<rect id="ki-item" x="146" y="148" width="30" height="26" rx="6" fill="' + item + '" stroke="' + itemLine + '" stroke-width="3"/>',
-
-    /* 顔 */
     '<circle cx="120" cy="66" r="42" fill="#fff" stroke="' + LINE + '" stroke-width="3"/>',
     '<path d="M84 44c8-16 44-20 60-6" fill="none" stroke="' + LINE + '" stroke-width="3" stroke-linecap="round"/>',
     '<circle cx="106" cy="64" r="3.4" fill="' + LINE + '"/>',
     '<circle cx="134" cy="64" r="3.4" fill="' + LINE + '"/>',
     '<path d="M110 79c4 5 16 5 20 0" fill="none" stroke="' + LINE + '" stroke-width="3" stroke-linecap="round"/>',
 
-    /* アクセサリー：イヤリングとネックレス */
-    '<circle id="ki-acc-l" cx="79" cy="72" r="6" fill="' + acc + '" stroke="' + accLine + '" stroke-width="2.5"/>',
-    '<circle id="ki-acc-r" cx="161" cy="72" r="6" fill="' + acc + '" stroke="' + accLine + '" stroke-width="2.5"/>',
-    '<path d="M108 114c5 7 19 7 24 0" fill="none" stroke="' + accLine + '" stroke-width="2.5" stroke-linecap="round"/>',
-    '<circle id="ki-acc-c" cx="120" cy="120" r="5" fill="' + acc + '" stroke="' + accLine + '" stroke-width="2.5"/>',
+    '</g>',
     '</svg>'
   ].join('');
 };

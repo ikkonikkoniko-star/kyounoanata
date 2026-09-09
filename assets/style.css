@@ -48,7 +48,7 @@ body {
 /* ---------- 本体 ---------- */
 .ki-main {
   max-width: 980px; margin: 24px auto 0;
-  display: grid; gap: 28px; grid-template-columns: minmax(240px, 340px) 1fr;
+  display: grid; gap: 28px; grid-template-columns: minmax(260px, 390px) 1fr;
   align-items: start;
 }
 @media (max-width: 760px) {
@@ -78,7 +78,7 @@ body {
 }
 
 .ki-figure { display: block; }
-.ki-character { width: 100%; max-width: 320px; height: auto; display: block; margin: 0 auto; }
+.ki-character { width: 100%; max-width: 390px; height: auto; display: block; margin: 0 auto; }
 .ki-character path,
 .ki-character rect,
 .ki-character circle,
