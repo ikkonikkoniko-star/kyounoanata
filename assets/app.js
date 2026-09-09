@@ -72,10 +72,10 @@ KI.init = function (versionId) {
   var chipWrap = el('div', 'ki-chip-area');
   chipWrap.appendChild(el('p', 'ki-chip-label', '気持ちにいちばん近いものを選んでください'));
   var chips = el('div', 'ki-chips');
-  version.chips.forEach(function (label) {
-    var b = el('button', 'ki-chip', label);
+  KI.chipsFor(version).forEach(function (chip) {
+    var b = el('button', 'ki-chip', chip.label);
     b.type = 'button';
-    b.addEventListener('click', function () { run(label); });
+    b.addEventListener('click', function () { run(chip.label, chip.color); });
     chips.appendChild(b);
   });
   chipWrap.appendChild(chips);
@@ -98,19 +98,19 @@ KI.init = function (versionId) {
     Array.prototype.forEach.call(chips.children, function (b) { b.disabled = on; });
   }
 
-  function run(feeling) {
+  function run(feeling, color) {
     setLoading(true);
     var done = function (data) {
       setLoading(false);
       show(feeling, data);
     };
-    KI.askClaude(version, feeling)
+    KI.askClaude(version, feeling, color)
       .then(done)
       .catch(function (err) {
         if (err && err.message !== 'no-api-key') {
-          console.warn('Claude API を使えなかったため、ローカル辞書で表示します:', err.message);
+          console.warn('Claude API を使えなかったため、決まった文章で表示します:', err.message);
         }
-        done(KI.askLocal(version, feeling));
+        done(KI.askLocal(version, feeling, color));
       });
   }
 

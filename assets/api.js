@@ -20,13 +20,11 @@ var STRUCTURED_OUTPUT_MODELS = [
   'claude-opus-5', 'claude-opus-4-8', 'claude-sonnet-5', 'claude-haiku-4-5'
 ];
 
+/* 色はチップの時点で決まっているので、モデルには文章だけを書かせる */
 var RESPONSE_SCHEMA = {
   type: 'object',
-  properties: {
-    color_name: { type: 'string', enum: [] },   /* 呼び出し時にパレットの色名で埋める */
-    howto: { type: 'string' }
-  },
-  required: ['color_name', 'howto'],
+  properties: { howto: { type: 'string' } },
+  required: ['howto'],
   additionalProperties: false
 };
 
@@ -46,38 +44,31 @@ KI.messageFor = function (color) {
   return 'きょうは' + color.name + 'のちからをかりてみましょう。';
 };
 
-function buildPrompt(version, feeling) {
-  /* 色の意味も一緒に渡して、色の力の話がこちらの文言から外れないようにする */
-  var list = KI.PALETTE.map(function (c) { return c.name + '：' + c.meaning; }).join('\n');
-  var count = KI.PALETTE.length;
+function buildPrompt(version, feeling, color) {
   return [
     'あなたは色彩心理にくわしいスタイリストです。',
-    '「今日はどんな自分でいたいか」という気持ちに対して、そう見せてくれる色を1つだけ提案します。',
+    '今日の気持ちに合う色は決まっています。その色を今日どう楽しむかの文章だけを書いてください。',
     '',
     '【今日の気持ち】' + feeling,
-    '',
-    '【色の選択肢】次の' + count + '色からちょうど1つを選び、色名は一字一句このまま使ってください。',
-    list,
+    '【今日の色】' + color.name,
+    '【この色の意味】' + color.meaning,
     '',
     '【口調】' + version.tone,
     '',
     '【取り入れ方で想定するもの】' + version.scope,
     '',
     '【出力】次のキーだけを持つJSONオブジェクトをそのまま返してください。前後に説明文やコードブロックは付けないこと。',
-    '{',
-    '  "color_name": "' + count + '色から選んだ色名",',
-    '  "howto": "その色を今日どう楽しむかの文章。3〜4文、130〜170字程度。"',
-    '}',
+    '{ "howto": "その色を今日どう楽しむかの文章。3〜4文、130〜170字程度。" }',
     '',
     'howto は箇条書きにせず、ひとつづきの文章にして、次の順で書いてください。',
-    '1. 着る服にその色を取り入れる提案',
-    '2. ハンカチなどの小物にその色を取り入れる提案',
-    '3. その色の意味と、その色が持つ力の話（上の一覧に書かれた内容に沿って）',
+    '1. 着る服に' + color.name + 'を取り入れる提案',
+    '2. ハンカチなどの小物に' + color.name + 'を取り入れる提案',
+    '3. ' + color.name + 'の意味と、その色が持つ力の話（上の【この色の意味】に沿って）',
     '4. 「今日もきっとうまくいく！」のような、前向きで軽やかな締めの一文',
     '',
     '読んだ人が「色って面白い」「今日やってみよう」と思える、明るい調子にしてください。',
     'こまかい着こなし指南にはせず、気軽に試せる範囲にとどめること。',
-    '色名そのものを言い換えたり、この' + count + '色にない色を持ち出したりしないでください。'
+    '色名は「' + color.name + '」とだけ書き、ほかの色を持ち出さないでください。'
   ].join('\n');
 }
 
@@ -95,20 +86,18 @@ function extractJson(text) {
 }
 
 /* 気持ちの文から色と提案を作る。失敗時は例外を投げるので呼び出し元でフォールバックする。 */
-KI.askClaude = function (version, feeling) {
+KI.askClaude = function (version, feeling, color) {
   var apiKey = KI.getApiKey();
   if (!apiKey) return Promise.reject(new Error('no-api-key'));
 
   var body = {
     model: KI.MODEL,
     max_tokens: 1500,
-    messages: [{ role: 'user', content: buildPrompt(version, feeling) }]
+    messages: [{ role: 'user', content: buildPrompt(version, feeling, color) }]
   };
 
   if (STRUCTURED_OUTPUT_MODELS.indexOf(KI.MODEL) !== -1) {
-    var schema = JSON.parse(JSON.stringify(RESPONSE_SCHEMA));
-    schema.properties.color_name.enum = KI.PALETTE.map(function (c) { return c.name; });
-    body.output_config = { format: { type: 'json_schema', schema: schema } };
+    body.output_config = { format: { type: 'json_schema', schema: RESPONSE_SCHEMA } };
   }
 
   return fetch(KI.API_URL, {
@@ -140,9 +129,6 @@ KI.askClaude = function (version, feeling) {
     var parsed = extractJson(text);
     if (!parsed) throw new Error('JSONを読み取れませんでした');
 
-    /* 色名はローカルパレットで引き直し、hex は必ずパレット側の値を使う */
-    var color = KI.findColorByName(parsed.color_name) || KI.matchColor(feeling);
-
     return {
       source: 'api',
       color: color,
@@ -153,8 +139,7 @@ KI.askClaude = function (version, feeling) {
 };
 
 /* API を使わずローカル辞書だけで結果を作る */
-KI.askLocal = function (version, feeling) {
-  var color = KI.matchColor(feeling);
+KI.askLocal = function (version, feeling, color) {
   return {
     source: 'local',
     color: color,
