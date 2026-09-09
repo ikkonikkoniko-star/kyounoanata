@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>きょうのいろ</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%8E%A8%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div id="app"></div>
+<script src="assets/colors.js"></script>
+<script src="assets/character.js"></script>
+<script src="assets/versions.js"></script>
+<script src="assets/app.js"></script>
+<script>
+(function () {
+  var root = document.getElementById('app');
+
+  var header = document.createElement('header');
+  header.className = 'ki-header';
+  var h1 = document.createElement('h1');
+  h1.className = 'ki-logo';
+  var colors = ['#E60033', '#F08300', '#F8B500', '#00A960', '#0068B7', '#884898'];
+  var tilts = [-8, 5, -4, 7, -6, 4];
+  'きょうのいろ'.split('').forEach(function (ch, i) {
+    var s = document.createElement('span');
+    s.className = 'ki-logo-char';
+    s.textContent = ch;
+    s.style.color = colors[i];
+    s.style.transform = 'rotate(' + tilts[i] + 'deg)';
+    h1.appendChild(s);
+  });
+  header.appendChild(h1);
+  var tag = document.createElement('p');
+  tag.className = 'ki-tagline';
+  tag.textContent = 'きょうの気分を、色にしてみる。';
+  header.appendChild(tag);
+  root.appendChild(header);
+
+  var main = document.createElement('main');
+  main.className = 'ki-index';
+  var lead = document.createElement('p');
+  lead.className = 'ki-lead';
+  lead.textContent = '「今日はどんな自分でいたいか」を選ぶと、そう見せてくれる色を1つ提案します。'
+    + 'その色を身につけた姿も一緒に出るので、着たときのイメージがすぐつかめます。';
+  main.appendChild(lead);
+
+  var cards = document.createElement('div');
+  cards.className = 'ki-cards';
+  var descs = {
+    personal: '毎日の服選びに。友だちが背中を押してくれるようなトーンで提案します。',
+    business: '会議・商談・初対面に。相手にどう見えるかを軸に提案します。',
+    kids: 'こども向け。ぜんぶひらがなで、やさしく提案します。'
+  };
+  ['personal', 'business', 'kids'].forEach(function (id) {
+    var v = KI.VERSIONS[id];
+    var a = document.createElement('a');
+    a.className = 'ki-card';
+    a.href = id + '.html';
+    var h2 = document.createElement('h2');
+    h2.textContent = v.label;
+    a.appendChild(h2);
+    var p = document.createElement('p');
+    p.textContent = descs[id];
+    a.appendChild(p);
+    var cw = document.createElement('div');
+    cw.className = 'ki-card-chips';
+    v.chips.forEach(function (c) {
+      var s = document.createElement('span');
+      s.className = 'ki-card-chip';
+      s.textContent = c;
+      cw.appendChild(s);
+    });
+    a.appendChild(cw);
+    cards.appendChild(a);
+  });
+  main.appendChild(cards);
+  root.appendChild(main);
+})();
+</script>
+</body>
+</html>
