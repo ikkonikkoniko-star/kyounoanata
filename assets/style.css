@@ -134,12 +134,12 @@ body {
   background: #fff6e2; border-left: 6px solid var(--ki-accent); border-radius: 0 12px 12px 0;
 }
 
-.ki-tiles { display: grid; gap: 12px; }
-.ki-tile { border: 2px solid #e6ded0; border-radius: 14px; padding: 14px 16px; background: #fffdf8; }
-.ki-tile-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-.ki-tile-icon { font-size: 20px; }
-.ki-tile-label { font-weight: 800; font-size: 14px; }
-.ki-tile-body { margin: 0; font-size: 15px; }
+/* 取り入れ方は1枠にまとめる。結果カードの主役なので少し大きめに扱う。 */
+.ki-howto { border: 2px solid #e6ded0; border-radius: 16px; padding: 18px 20px; background: #fffdf8; }
+.ki-howto-head { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; }
+.ki-howto-icon { font-size: 22px; line-height: 1; }
+.ki-howto-label { margin: 0; font-size: 15px; font-weight: 800; }
+.ki-howto-body { margin: 0; font-size: 15.5px; line-height: 1.85; }
 
 .ki-meaning { margin-top: 20px; padding-top: 18px; border-top: 2px dashed #e0d8c8; }
 .ki-meaning-title { margin: 0 0 6px; font-size: 15px; font-weight: 800; }

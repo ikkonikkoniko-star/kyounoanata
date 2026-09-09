@@ -25,12 +25,10 @@ var RESPONSE_SCHEMA = {
   properties: {
     color_name: { type: 'string', enum: [] },   /* 呼び出し時にパレットの色名で埋める */
     message: { type: 'string' },
-    tops: { type: 'string' },
-    item: { type: 'string' },
-    accessory: { type: 'string' },
+    howto: { type: 'string' },
     meaning: { type: 'string' }
   },
-  required: ['color_name', 'message', 'tops', 'item', 'accessory', 'meaning'],
+  required: ['color_name', 'message', 'howto', 'meaning'],
   additionalProperties: false
 };
 
@@ -48,7 +46,6 @@ KI.setApiKey = function (key) {
 function buildPrompt(version, feeling) {
   var names = KI.PALETTE.map(function (c) { return c.name; }).join('、');
   var count = KI.PALETTE.length;
-  var slots = version.slots;
   return [
     'あなたは色彩心理にくわしいスタイリストです。',
     '「今日はどんな自分でいたいか」という気持ちに対して、そう見せてくれる色を1つだけ提案します。',
@@ -60,17 +57,19 @@ function buildPrompt(version, feeling) {
     '',
     '【口調】' + version.tone,
     '',
+    '【取り入れ方で想定するもの】' + version.scope,
+    '',
     '【出力】次のキーだけを持つJSONオブジェクトをそのまま返してください。前後に説明文やコードブロックは付けないこと。',
     '{',
     '  "color_name": "' + count + '色から選んだ色名",',
     '  "message": "気持ちに寄り添う一言。40〜60字程度。",',
     '  "meaning": "その色が心理的に持つ意味。40〜70字程度。",',
-    '  "tops": "' + slots[0].label + 'にその色を取り入れる具体案。60〜90字程度。",',
-    '  "item": "' + slots[1].label + 'にその色を取り入れる具体案。60〜90字程度。",',
-    '  "accessory": "' + slots[2].label + 'にその色を取り入れる具体案。60〜90字程度。"',
+    '  "howto": "その色を身のまわりにどう取り入れるかの提案。2〜3文、100〜140字程度。"',
     '}',
     '',
-    '提案は「何を・どこに・どのくらいの面積で」が想像できる具体的なものにしてください。',
+    'howto は箇条書きにせず、ひとつづきの文章にしてください。',
+    '「何を・どこに・どのくらいの面積で」が想像できるように、大きく見える部分と小さな部分の両方に触れ、',
+    '全部そろえなくてよいことも一言添えてください。',
     '色名そのものを言い換えたり、この' + count + '色にない色を持ち出したりしないでください。'
   ].join('\n');
 }
@@ -142,9 +141,7 @@ KI.askClaude = function (version, feeling) {
       color: color,
       message: parsed.message || '',
       meaning: parsed.meaning || color.meaning,
-      tops: parsed.tops || '',
-      item: parsed.item || '',
-      accessory: parsed.accessory || ''
+      howto: parsed.howto || ''
     };
   });
 };
@@ -158,8 +155,6 @@ KI.askLocal = function (version, feeling) {
     color: color,
     message: f.message,
     meaning: color.meaning,
-    tops: f.tops,
-    item: f.item,
-    accessory: f.accessory
+    howto: f.howto
   };
 };

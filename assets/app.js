@@ -146,17 +146,15 @@ KI.init = function (versionId) {
     result.appendChild(el('p', 'ki-echo', '「' + feeling + '」の あなたへ'));
     result.appendChild(el('p', 'ki-message', data.message));
 
-    var tiles = el('div', 'ki-tiles');
-    version.slots.forEach(function (slot) {
-      var tile = el('div', 'ki-tile');
-      var head2 = el('div', 'ki-tile-head');
-      head2.appendChild(el('span', 'ki-tile-icon', slot.icon));
-      head2.appendChild(el('span', 'ki-tile-label', slot.label));
-      tile.appendChild(head2);
-      tile.appendChild(el('p', 'ki-tile-body', data[slot.key]));
-      tiles.appendChild(tile);
-    });
-    result.appendChild(tiles);
+    var howto = el('div', 'ki-howto');
+    var howtoHead = el('div', 'ki-howto-head');
+    var icon = el('span', 'ki-howto-icon', version.howtoIcon);
+    icon.setAttribute('aria-hidden', 'true');
+    howtoHead.appendChild(icon);
+    howtoHead.appendChild(el('h2', 'ki-howto-label', version.howtoLabel));
+    howto.appendChild(howtoHead);
+    howto.appendChild(el('p', 'ki-howto-body', data.howto));
+    result.appendChild(howto);
 
     var meaning = el('div', 'ki-meaning');
     meaning.appendChild(el('h2', 'ki-meaning-title', color.name + ' の意味'));
