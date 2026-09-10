@@ -2,7 +2,8 @@
  * チップは18色ぶん（1色につき1つ）。どの気持ちがどの色になるかは colors.js の
  * feeling で固定していて、キッズVerだけ chipLabels で言い回しを差し替える。
  * ほかに提案の対象になるアイテム、言葉遣いのトーン、
- * API が使えないときのフォールバック提案文をここにまとめる。
+ * API が使えないときの提案文（前半だけ）をここにまとめる。
+ * 色の意味と締めの一文は colors.js 側の文言をそのまま使う。
  * 見た目（POPなキャラクター・吹き出し・カラフル図形）は3Ver共通。
  */
 window.KI = window.KI || {};
@@ -28,8 +29,7 @@ KI.VERSIONS = {
       var tops = pick(['Tシャツ', 'ニット', 'カットソー', 'シャツ', 'カーディガン'], color.hex, 0);
       var small = pick(['ハンカチ', 'トートバッグ', 'ストール', '靴下', 'ヘアゴム'], color.hex, 1);
       return tops + 'など着る服に' + color.name + 'を取り入れてみたり、' + small + 'などの小物に' +
-        color.name + 'を足してみましょう。' + color.name + 'は' + color.meaning +
-        'ひとつ身につけるだけで、今日もきっとうまくいく！';
+        color.name + 'を足してみましょう。';
     }
   },
 
@@ -45,8 +45,7 @@ KI.VERSIONS = {
       var tops = pick(['シャツ', 'ブラウス', 'インナー', 'ニット', 'ベスト'], color.hex, 0);
       var small = pick(['ハンカチ', 'ネクタイ', 'ポケットチーフ', '名刺入れ', 'ペン'], color.hex, 1);
       return 'ジャケットの下の' + tops + 'など着るものに' + color.name + 'を取り入れてみたり、' + small +
-        'などの小物に' + color.name + 'を足してみましょう。' + color.name + 'は' + color.meaning +
-        '小さな面積でも、その色はきちんと相手に届きます。今日もきっとうまくいく。';
+        'などの小物に' + color.name + 'を足してみましょう。';
     }
   },
 
@@ -83,8 +82,7 @@ KI.VERSIONS = {
       var tops = pick(['Tシャツ', 'トレーナー', 'パーカー', 'シャツ'], color.hex, 0);
       var small = pick(['ハンカチ', 'くつした', 'ぼうし', 'すいとう', 'ヘアゴム'], color.hex, 1);
       return tops + 'など きるふくに' + color.name + 'を つかってみたり、' + small + 'などの もちものに' +
-        color.name + 'を たしてみよう。' + color.name + 'は' + color.meaning +
-        'ひとつ もっているだけで、きょうも きっと うまくいく！';
+        color.name + 'を たしてみよう。';
     }
   }
 };

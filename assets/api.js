@@ -20,11 +20,12 @@ var STRUCTURED_OUTPUT_MODELS = [
   'claude-opus-5', 'claude-opus-4-8', 'claude-sonnet-5', 'claude-haiku-4-5'
 ];
 
-/* 色はチップの時点で決まっているので、モデルには文章だけを書かせる */
+/* 色も、色の意味も、締めの一文もこちらで決まっている。
+ * モデルに書かせるのは「服と小物への取り入れ方」の前半だけ。 */
 var RESPONSE_SCHEMA = {
   type: 'object',
-  properties: { howto: { type: 'string' } },
-  required: ['howto'],
+  properties: { suggestion: { type: 'string' } },
+  required: ['suggestion'],
   additionalProperties: false
 };
 
@@ -47,26 +48,24 @@ KI.messageFor = function (color) {
 function buildPrompt(version, feeling, color) {
   return [
     'あなたは色彩心理にくわしいスタイリストです。',
-    '今日の気持ちに合う色は決まっています。その色を今日どう楽しむかの文章だけを書いてください。',
+    '今日の色は決まっています。その色を身のまわりにどう取り入れるかの提案だけを書いてください。',
     '',
     '【今日の気持ち】' + feeling,
     '【今日の色】' + color.name,
-    '【この色の意味】' + color.meaning,
     '',
     '【口調】' + version.tone,
     '',
     '【取り入れ方で想定するもの】' + version.scope,
     '',
     '【出力】次のキーだけを持つJSONオブジェクトをそのまま返してください。前後に説明文やコードブロックは付けないこと。',
-    '{ "howto": "その色を今日どう楽しむかの文章。3〜4文、130〜170字程度。" }',
+    '{ "suggestion": "取り入れ方の提案。2文、70〜90字程度。" }',
     '',
-    'howto は箇条書きにせず、ひとつづきの文章にして、次の順で書いてください。',
+    'suggestion は箇条書きにせず、ひとつづきの文章にして、次の2文で書いてください。',
     '1. 着る服に' + color.name + 'を取り入れる提案',
     '2. ハンカチなどの小物に' + color.name + 'を取り入れる提案',
-    '3. ' + color.name + 'の意味と、その色が持つ力の話（上の【この色の意味】に沿って）',
-    '4. 「今日もきっとうまくいく！」のような、前向きで軽やかな締めの一文',
     '',
-    '読んだ人が「色って面白い」「今日やってみよう」と思える、明るい調子にしてください。',
+    'このあとに「' + color.name + 'は' + color.meaning + '」という文が続くので、',
+    '色の意味の説明はせず、取り入れ方だけを書いて、そのまま次の文につながるように終えてください。',
     'こまかい着こなし指南にはせず、気軽に試せる範囲にとどめること。',
     '色名は「' + color.name + '」とだけ書き、ほかの色を持ち出さないでください。'
   ].join('\n');
@@ -129,11 +128,13 @@ KI.askClaude = function (version, feeling, color) {
     var parsed = extractJson(text);
     if (!parsed) throw new Error('JSONを読み取れませんでした');
 
+    if (!parsed.suggestion) throw new Error('提案の文章が空でした');
+
     return {
       source: 'api',
       color: color,
       message: KI.messageFor(color),
-      howto: parsed.howto || ''
+      howto: KI.composeHowto(parsed.suggestion, color)
     };
   });
 };
@@ -144,6 +145,6 @@ KI.askLocal = function (version, feeling, color) {
     source: 'local',
     color: color,
     message: KI.messageFor(color),
-    howto: version.fallback(color)
+    howto: KI.composeHowto(version.fallback(color), color)
   };
 };
