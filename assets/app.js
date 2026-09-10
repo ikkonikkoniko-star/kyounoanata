@@ -116,7 +116,7 @@ KI.init = function (versionId) {
 
   function show(feeling, data) {
     var color = data.color;
-    figure.innerHTML = KI.renderCharacter(color.hex, versionId);
+    figure.innerHTML = KI.renderCharacter(color, versionId);
     chipWrap.hidden = true;
     result.hidden = false;
     result.innerHTML = '';
@@ -124,7 +124,7 @@ KI.init = function (versionId) {
 
     var head = el('div', 'ki-color-head');
     var swatch = el('div', 'ki-swatch');
-    swatch.style.background = color.hex;
+    swatch.style.background = KI.cssPaint(color, 0);
     head.appendChild(swatch);
     var names = el('div', 'ki-color-names');
     names.appendChild(el('p', 'ki-color-name', color.name));

@@ -55,6 +55,41 @@ KI.textOn = function (hex) {
   return KI.isLight(hex) ? '#231815' : '#ffffff';
 };
 
+/* 塗り。sheen を持つ色（金属色）はグラデーションになる。
+ * amount は shade() と同じで、濃淡をつけた状態のグラデーションを作る。 */
+/* 明るい帯を中央に寄せると、のっぺりせず金属らしく光って見える。
+ * sheen の色数ぶんの位置をここで決める。 */
+function sheenOffsets(n) {
+  if (n === 5) return [0, 33, 45, 58, 100];
+  var out = [];
+  for (var i = 0; i < n; i++) out.push(Math.round(i / (n - 1) * 100));
+  return out;
+}
+
+KI.cssPaint = function (color, amount) {
+  if (!color.sheen) return KI.shade(color.hex, amount || 0);
+  var off = sheenOffsets(color.sheen.length);
+  var stops = color.sheen.map(function (c, i) {
+    return KI.shade(c, amount || 0) + ' ' + off[i] + '%';
+  });
+  return 'linear-gradient(135deg, ' + stops.join(', ') + ')';
+};
+
+/* SVG 用。定義（defs の中身）と、fill に入れる値を返す */
+function svgPaint(color, amount, id) {
+  if (!color || !color.sheen) {
+    return { def: '', fill: color ? KI.shade(color.hex, amount || 0) : BLANK };
+  }
+  var off = sheenOffsets(color.sheen.length);
+  var stops = color.sheen.map(function (c, i) {
+    return '<stop offset="' + off[i] + '%" stop-color="' + KI.shade(c, amount || 0) + '"/>';
+  }).join('');
+  return {
+    def: '<linearGradient id="' + id + '" x1="0" y1="0" x2="1" y2="1">' + stops + '</linearGradient>',
+    fill: 'url(#' + id + ')'
+  };
+}
+
 var LINE = '#2b2b2b';
 var FACE = '#ffffff';
 var BLANK = '#ECECEC';
@@ -290,14 +325,20 @@ var DECO_SLOTS = [
 /* hex が null のときは無色（Tシャツがまだ塗られていない）状態を描く。
  * viewBox は 340x300。人物は translate(50,0) で中央に寄せ、
  * 左右の空きに小物を単体で置く。 */
-KI.renderCharacter = function (hex, versionId) {
-  var colored = !!hex;
-  var tops = colored ? hex : BLANK;
-  var right = colored ? KI.shade(hex, -0.28) : BLANK;
-  var left = colored ? KI.shade(hex, 0.45) : BLANK;
-  var topsLine = colored ? outlineFor(tops) : LINE;
-  var rightLine = colored ? outlineFor(right) : LINE;
-  var leftLine = colored ? outlineFor(left) : LINE;
+KI.renderCharacter = function (color, versionId) {
+  var colored = !!color;
+  var hex = colored ? color.hex : null;
+
+  /* 金属色はグラデーションで塗るので、定義と fill を分けて受け取る */
+  var pTops = svgPaint(colored ? color : null, 0, 'ki-sheen-tops');
+  var pRight = svgPaint(colored ? color : null, -0.28, 'ki-sheen-right');
+  var pLeft = svgPaint(colored ? color : null, 0.45, 'ki-sheen-left');
+  var tops = pTops.fill, right = pRight.fill, left = pLeft.fill;
+
+  /* 輪郭は元の色から決める（グラデーションからは決められないため） */
+  var topsLine = colored ? outlineFor(hex) : LINE;
+  var rightLine = colored ? outlineFor(KI.shade(hex, -0.28)) : LINE;
+  var leftLine = colored ? outlineFor(KI.shade(hex, 0.45)) : LINE;
 
   var isKids = versionId === 'kids';
   var isBusiness = versionId === 'business';
@@ -322,6 +363,7 @@ KI.renderCharacter = function (hex, versionId) {
 
   return [
     '<svg class="ki-character" viewBox="0 0 340 300" role="img" aria-label="' + label + '">',
+    '<defs>' + pTops.def + pRight.def + pLeft.def + '</defs>',
     decorations(colored ? hex : null, DECO_SLOTS),
     leftItem,
     rightItem,
