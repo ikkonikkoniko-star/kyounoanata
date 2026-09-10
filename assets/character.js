@@ -343,9 +343,10 @@ KI.renderCharacter = function (color, versionId) {
   var isKids = versionId === 'kids';
   var isBusiness = versionId === 'business';
 
+  var metalNow = colored && !!color.sheen;
   var items = isBusiness ? '左に腕時計、右にペン'
-            : isKids ? '左に靴下、右にハンカチ'
-            : '左にハンカチ、右にバッグ';
+            : isKids ? ('左に靴下、右に' + (metalNow ? '腕時計' : 'ハンカチ'))
+            : ((metalNow ? '左に腕時計' : '左にハンカチ') + '、右にバッグ');
   var label = colored
     ? '選ばれた色のTシャツを着たキャラクターと、同じ色の小物（' + items + '）'
     : 'まだ色のついていないキャラクターと小物';
@@ -354,11 +355,15 @@ KI.renderCharacter = function (color, versionId) {
              : isBusiness ? businessFigure(tops, topsLine)
              : personalFigure(tops, topsLine);
 
+  /* 金属色のハンカチは見た目が成立しないので、腕時計に差し替える */
+  var metal = colored && !!color.sheen;
+
   var leftItem = isBusiness ? watch(left, leftLine, 54)
                : isKids ? sock(left, leftLine, 54)
+               : metal ? watch(left, leftLine, 54)
                : handkerchief(left, leftLine, 54);
   var rightItem = isBusiness ? pen(right, rightLine, colored ? KI.shade(hex, -0.5) : BLANK, 286)
-                : isKids ? handkerchief(right, rightLine, 286)
+                : isKids ? (metal ? watch(right, rightLine, 286) : handkerchief(right, rightLine, 286))
                 : bag(right, rightLine, 286);
 
   return [
