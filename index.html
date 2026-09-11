@@ -66,12 +66,17 @@
     a.appendChild(p);
     var cw = document.createElement('div');
     cw.className = 'ki-card-chips';
-    v.chips.forEach(function (c) {
+    /* 18個あるので、雰囲気が伝わる先頭4つだけ見せる */
+    KI.chipsFor(v).slice(0, 4).forEach(function (chip) {
       var s = document.createElement('span');
       s.className = 'ki-card-chip';
-      s.textContent = c;
+      s.textContent = chip.label;
       cw.appendChild(s);
     });
+    var more = document.createElement('span');
+    more.className = 'ki-card-chip';
+    more.textContent = 'ほか' + (KI.chipsFor(v).length - 4) + 'つ';
+    cw.appendChild(more);
     a.appendChild(cw);
     cards.appendChild(a);
   });

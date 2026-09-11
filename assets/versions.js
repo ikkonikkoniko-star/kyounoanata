@@ -1,34 +1,21 @@
 /* 個人Ver／ビジネスVer／キッズVer の差分定義
+ *
  * チップは18色ぶん（1色につき1つ）。どの気持ちがどの色になるかは colors.js の
  * feeling で固定していて、キッズVerだけ chipLabels で言い回しを差し替える。
- * ほかに提案の対象になるアイテム、言葉遣いのトーン、
- * API が使えないときの提案文（前半だけ）をここにまとめる。
- * 色の意味と締めの一文は colors.js 側の文言をそのまま使う。
- * 見た目（POPなキャラクター・吹き出し・カラフル図形）は3Ver共通。
+ * suggestion は結果の文章の1〜2文目。色名以外は変わらない固定文で、
+ * このあとに colors.js の「○○は（意味）」＋（締めの一文）が続く。
  */
 window.KI = window.KI || {};
-
-/* 色ごとに安定してアイテムを選ぶ（同じ色なら毎回同じ提案になる） */
-function pick(list, hex, offset) {
-  var c = KI.hexToRgb(hex);
-  var seed = c.r * 3 + c.g * 5 + c.b * 7 + offset * 11;
-  return list[seed % list.length];
-}
 
 KI.VERSIONS = {
   personal: {
     id: 'personal',
     label: '個人Ver',
     question: 'きょうは どんな自分でいたい？',
-    tone: '親しみやすい「です・ます」まじりのカジュアルな話し言葉。友だちが背中を押してくれるような温度感で。',
     howtoLabel: 'こんなふうに色を入れてみる',
     howtoIcon: '👕',
-    /* API に「どんなアイテムを想定して書くか」を伝えるための語彙 */
-    scope: 'Tシャツ・ニット・シャツなどのトップスと、バッグ・ハンカチ・ストール・靴下・ピアス・ヘアゴムなどの小物',
-    fallback: function (color) {
-      var tops = pick(['Tシャツ', 'ニット', 'カットソー', 'シャツ', 'カーディガン'], color.hex, 0);
-      var small = pick(['ハンカチ', 'トートバッグ', 'ストール', '靴下', 'ヘアゴム'], color.hex, 1);
-      return tops + 'など着る服に' + color.name + 'を取り入れてみたり、' + small + 'などの小物に' +
+    suggestion: function (color) {
+      return '着る服に' + color.name + 'を取り入れてみたり、ハンカチなどの小物に' +
         color.name + 'を足してみましょう。';
     }
   },
@@ -37,15 +24,11 @@ KI.VERSIONS = {
     id: 'business',
     label: 'ビジネスVer',
     question: '今日は どんな自分で仕事に臨みますか？',
-    tone: '落ち着いた敬体。相手に与える印象や場の空気に触れる、ビジネスシーンを想定した言葉づかいで。',
     howtoLabel: 'こんなふうに色を取り入れる',
     howtoIcon: '🧥',
-    scope: 'ジャケットの下に着るシャツ・インナー・ニットなどのトップスと、ネクタイ・ポケットチーフ・名刺入れ・ノートカバー・ペン・腕時計のベルトなどのビジネス小物',
-    fallback: function (color) {
-      var tops = pick(['シャツ', 'ブラウス', 'インナー', 'ニット', 'ベスト'], color.hex, 0);
-      var small = pick(['ハンカチ', 'ネクタイ', 'ポケットチーフ', '名刺入れ', 'ペン'], color.hex, 1);
-      return 'ジャケットの下の' + tops + 'など着るものに' + color.name + 'を取り入れてみたり、' + small +
-        'などの小物に' + color.name + 'を足してみましょう。';
+    suggestion: function (color) {
+      return '着るものに' + color.name + 'を取り入れてみたり、腕時計などの小物に' +
+        color.name + 'を足してみましょう。';
     }
   },
 
@@ -53,7 +36,8 @@ KI.VERSIONS = {
     id: 'kids',
     label: 'キッズVer',
     question: 'きょうは どんな きぶん？',
-    tone: '小学校低学年にもわかる、やさしいひらがな中心の話し言葉。むずかしい漢字と熟語は使わない。',
+    howtoLabel: 'こんなふうに いろを つかってみよう',
+    howtoIcon: '🎨',
     /* キッズVerだけ、同じ色に対してひらがなの言い回しを当てる */
     chipLabels: {
       'あか': 'げんきに うごきたい',
@@ -75,14 +59,18 @@ KI.VERSIONS = {
       'グレイ': 'きちんと したい',
       'くろ': 'ほんきで やりたい'
     },
-    howtoLabel: 'こんなふうに いろを つかってみよう',
-    howtoIcon: '🎨',
-    scope: 'Tシャツ・トレーナー・パーカーなどのふくと、ぼうし・すいとう・ハンカチ・くつした・ヘアゴム・バッジなどの もちもの',
-    fallback: function (color) {
-      var tops = pick(['Tシャツ', 'トレーナー', 'パーカー', 'シャツ'], color.hex, 0);
-      var small = pick(['ハンカチ', 'くつした', 'ぼうし', 'すいとう', 'ヘアゴム'], color.hex, 1);
-      return tops + 'など きるふくに' + color.name + 'を つかってみたり、' + small + 'などの もちものに' +
+    suggestion: function (color) {
+      return 'きるふくに' + color.name + 'を つかってみたり、ハンカチなどの もちものに' +
         color.name + 'を たしてみよう。';
     }
   }
+};
+
+/* 結果の中身を組み立てる。すべて固定文なので、外に問い合わせるものは何もない。 */
+KI.resultFor = function (version, color) {
+  return {
+    color: color,
+    message: 'きょうは' + color.name + 'のちからをかりてみましょう。',
+    howto: version.suggestion(color) + color.name + 'は' + color.meaning + color.closing
+  };
 };

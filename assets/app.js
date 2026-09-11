@@ -1,6 +1,7 @@
 /* 画面の組み立てと操作
  * 3Ver（個人／ビジネス／キッズ）で共通のPOPな見た目をここで作り、
  * 差分は versions.js の設定から流し込む。
+ * 文章はすべて固定なので、外に問い合わせるものはなく、押した瞬間に結果が出る。
  */
 window.KI = window.KI || {};
 
@@ -16,8 +17,7 @@ function el(tag, cls, text) {
 
 function buildLogo() {
   var h1 = el('h1', 'ki-logo');
-  var chars = 'きょうのいろ'.split('');
-  chars.forEach(function (ch, i) {
+  'きょうのいろ'.split('').forEach(function (ch, i) {
     var span = el('span', 'ki-logo-char', ch);
     span.style.color = LOGO_COLORS[i % LOGO_COLORS.length];
     span.style.transform = 'rotate(' + LOGO_TILTS[i % LOGO_TILTS.length] + 'deg)';
@@ -75,11 +75,10 @@ KI.init = function (versionId) {
   KI.chipsFor(version).forEach(function (chip) {
     var b = el('button', 'ki-chip', chip.label);
     b.type = 'button';
-    b.addEventListener('click', function () { run(chip.label, chip.color); });
+    b.addEventListener('click', function () { show(chip.label, chip.color); });
     chips.appendChild(b);
   });
   chipWrap.appendChild(chips);
-
   panel.appendChild(chipWrap);
 
   var result = el('div', 'ki-result');
@@ -88,34 +87,11 @@ KI.init = function (versionId) {
 
   main.appendChild(panel);
   root.appendChild(main);
-  root.appendChild(buildSettings());
 
   /* --- 動作 --- */
 
-  function setLoading(on) {
-    chipWrap.classList.toggle('is-busy', on);
-    bubble.textContent = on ? '……いま考えています' : version.question;
-    Array.prototype.forEach.call(chips.children, function (b) { b.disabled = on; });
-  }
-
-  function run(feeling, color) {
-    setLoading(true);
-    var done = function (data) {
-      setLoading(false);
-      show(feeling, data);
-    };
-    KI.askClaude(version, feeling, color)
-      .then(done)
-      .catch(function (err) {
-        if (err && err.message !== 'no-api-key') {
-          console.warn('Claude API を使えなかったため、決まった文章で表示します:', err.message);
-        }
-        done(KI.askLocal(version, feeling, color));
-      });
-  }
-
-  function show(feeling, data) {
-    var color = data.color;
+  function show(feeling, color) {
+    var data = KI.resultFor(version, color);
     figure.innerHTML = KI.renderCharacter(color, versionId);
     chipWrap.hidden = true;
     result.hidden = false;
@@ -145,10 +121,6 @@ KI.init = function (versionId) {
     howto.appendChild(el('p', 'ki-howto-body', data.howto));
     result.appendChild(howto);
 
-    if (data.source === 'local') {
-      result.appendChild(el('p', 'ki-badge', 'オフライン辞書で表示しています（APIキー未設定、または通信に失敗しました）'));
-    }
-
     var again = el('button', 'ki-again', 'もう一度きく');
     again.type = 'button';
     again.addEventListener('click', reset);
@@ -163,44 +135,6 @@ KI.init = function (versionId) {
     chipWrap.hidden = false;
     figure.innerHTML = KI.renderCharacter(null, versionId);
     document.documentElement.style.removeProperty('--ki-accent');
-    bubble.textContent = version.question;
     stage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 };
-
-/* APIキーの入力欄。キーはこの端末の localStorage にだけ保存する。 */
-function buildSettings() {
-  var box = el('details', 'ki-settings');
-  var summary = el('summary', 'ki-settings-summary', 'APIキーの設定');
-  box.appendChild(summary);
-
-  var body = el('div', 'ki-settings-body');
-  body.appendChild(el('p', 'ki-settings-note',
-    'Claude API のキーを入れると、色と提案文を毎回 Claude が考えます。' +
-    '未設定のままでも、' + KI.PALETTE.length + '色のローカル辞書で動きます。' +
-    'キーはこの端末のブラウザにだけ保存されますが、ページを開いた人からは読み取れます。' +
-    '公開サイトに置く場合は、キーをサーバー側で預かる構成に変えてください。'));
-
-  var row = el('div', 'ki-settings-row');
-  var input = el('input', 'ki-settings-input');
-  input.type = 'password';
-  input.placeholder = 'sk-ant-...';
-  input.value = KI.getApiKey();
-  input.setAttribute('aria-label', 'Claude API キー');
-  var save = el('button', 'ki-settings-save', '保存');
-  save.type = 'button';
-  var status = el('span', 'ki-settings-status', KI.getApiKey() ? '設定済み' : '未設定');
-
-  save.addEventListener('click', function () {
-    KI.setApiKey(input.value.trim());
-    status.textContent = input.value.trim() ? '保存しました' : '未設定';
-  });
-
-  row.appendChild(input);
-  row.appendChild(save);
-  row.appendChild(status);
-  body.appendChild(row);
-  body.appendChild(el('p', 'ki-settings-model', 'モデル: ' + KI.MODEL));
-  box.appendChild(body);
-  return box;
-}
