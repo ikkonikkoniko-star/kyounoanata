@@ -96,7 +96,10 @@ KI.PALETTE = [
 /* Verごとのチップ一覧。ラベルの文言だけ Ver で差し替えられるようにして、
  * どのラベルがどの色になるかはこのパレット側で固定する。 */
 KI.chipsFor = function (version) {
-  return KI.PALETTE.map(function (c) {
+  return KI.PALETTE.filter(function (c) {
+    /* hideColors に入れた色は、そのVerではチップに出さない */
+    return !(version.hideColors && version.hideColors.indexOf(c.name) !== -1);
+  }).map(function (c) {
     return {
       label: (version.chipLabels && version.chipLabels[c.name]) || c.feeling,
       color: c
