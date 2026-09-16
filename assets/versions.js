@@ -15,7 +15,8 @@ KI.VERSIONS = {
     question: 'きょうは どんな自分でいたい？',
     /* 日常で口に出すような言い回しにする */
     /* 個人Verでは「結果を出す」が日常の気持ちになじまないのでゴールドは出さない */
-    hideColors: ['ゴールド'],
+    /* グレイは3Verとも出さない */
+    hideColors: ['ゴールド', 'グレイ'],
     chipLabels: {
       'あか': 'やる気を出したい',
       'オレンジ': 'チームワークを大事にしたい',
@@ -47,6 +48,8 @@ KI.VERSIONS = {
     id: 'business',
     label: 'ビジネスVer',
     question: '今日は どんな自分で仕事に臨みますか？',
+    /* グレイは3Verとも出さない */
+    hideColors: ['グレイ'],
     /* 仕事の場面で使う言い回しにする */
     chipLabels: {
       'あか': 'まず動き出したい',
@@ -80,6 +83,8 @@ KI.VERSIONS = {
     id: 'kids',
     label: 'キッズVer',
     question: 'きょうは どんな きぶん？',
+    /* グレイは3Verとも出さない */
+    hideColors: ['グレイ'],
     howtoLabel: 'こんなふうに いろを つかってみよう',
     howtoIcon: '🎨',
     /* こどもが実際に口にする言い回しにする */
