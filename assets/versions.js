@@ -179,7 +179,12 @@ KI.VERSIONS = {
     },
 
     /* キッズは服や小物の話をせず、いろの説明だけを出す */
-    suggestion: null
+    suggestion: null,
+
+    /* 一行目もこどもの言葉にする */
+    message: function (color) {
+      return 'きょうは' + color.name + 'の ちからを かりてみよう。';
+    }
   }
 };
 
@@ -187,7 +192,9 @@ KI.VERSIONS = {
 KI.resultFor = function (version, color) {
   return {
     color: color,
-    message: 'きょうは' + color.name + 'のちからをかりてみましょう。',
+    message: version.message
+      ? version.message(color)
+      : 'きょうは' + color.name + 'のちからをかりてみましょう。',
     howto: KI.composeHowto(version.suggestion ? version.suggestion(color) : '', color, version)
   };
 };
