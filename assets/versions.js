@@ -155,7 +155,7 @@ KI.VERSIONS = {
         closing: 'ひとつ みにつけて、きょうは さいごまで やりきろう！' }
     },
 
-    howtoLabel: 'こんなふうに いろを つかってみよう',
+    howtoLabel: 'この いろって、どんな いろ？',
     howtoIcon: '🎨',
     /* こどもが実際に口にする言い回しにする */
     chipLabels: {
@@ -178,10 +178,8 @@ KI.VERSIONS = {
       'くろ': 'さいごまで やりたい'
     },
 
-    suggestion: function (color) {
-      return 'きるふくに' + color.name + 'を つかってみたり、ハンカチなどの もちものに' +
-        color.name + 'を たしてみよう。';
-    }
+    /* キッズは服や小物の話をせず、いろの説明だけを出す */
+    suggestion: null
   }
 };
 
@@ -190,6 +188,6 @@ KI.resultFor = function (version, color) {
   return {
     color: color,
     message: 'きょうは' + color.name + 'のちからをかりてみましょう。',
-    howto: KI.composeHowto(version.suggestion(color), color, version)
+    howto: KI.composeHowto(version.suggestion ? version.suggestion(color) : '', color, version)
   };
 };
