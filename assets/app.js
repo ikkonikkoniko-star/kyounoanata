@@ -52,7 +52,7 @@ KI.init = function (versionId) {
   var header = el('header', 'ki-header');
   header.appendChild(buildNav(versionId));
   header.appendChild(buildLogo());
-  header.appendChild(el('p', 'ki-tagline', 'きょうの気分を、色にしてみる。'));
+  header.appendChild(el('p', 'ki-tagline', 'なりたい自分になる、色の力をかりよう！'));
   root.appendChild(header);
 
   var main = el('main', 'ki-main');
