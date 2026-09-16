@@ -103,10 +103,22 @@ KI.chipsFor = function (version) {
   });
 };
 
+/* その色の意味と締めを引く。
+ * Ver側に texts があればそちらを優先して、なければパレットの文言を使う。
+ * チップの言い回しを変えたVerだけ、説明もそのVer用に差し替えられる。 */
+KI.textFor = function (version, color) {
+  var over = version && version.texts && version.texts[color.name];
+  return {
+    meaning: (over && over.meaning) || color.meaning,
+    closing: (over && over.closing) || color.closing
+  };
+};
+
 /* 取り入れ方の文章を組み立てる。
- * 前半（服と小物）だけが可変で、色の意味と締めはパレットの文言をそのまま使う。 */
-KI.composeHowto = function (suggestion, color) {
-  return suggestion + color.name + 'は' + color.meaning + color.closing;
+ * 前半（服と小物）だけが可変で、色の意味と締めは表かVerの文言をそのまま使う。 */
+KI.composeHowto = function (suggestion, color, version) {
+  var t = KI.textFor(version, color);
+  return suggestion + color.name + 'は' + t.meaning + t.closing;
 };
 
 KI.findColorByName = function (name) {
