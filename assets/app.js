@@ -70,7 +70,8 @@ KI.init = function (versionId) {
   var panel = el('section', 'ki-panel');
 
   var chipWrap = el('div', 'ki-chip-area');
-  chipWrap.appendChild(el('p', 'ki-chip-label', '気持ちにいちばん近いものを選んでください'));
+  chipWrap.appendChild(el('p', 'ki-chip-label',
+    version.chipHint || '気持ちにいちばん近いものを選んでください'));
   var chips = el('div', 'ki-chips');
   KI.chipsFor(version).forEach(function (chip) {
     var b = el('button', 'ki-chip', chip.label);
