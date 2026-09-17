@@ -32,10 +32,6 @@
     h1.appendChild(s);
   });
   header.appendChild(h1);
-  var tag = document.createElement('p');
-  tag.className = 'ki-tagline';
-  tag.textContent = 'なりたい自分になる、色の力をかりよう！';
-  header.appendChild(tag);
   root.appendChild(header);
 
   var main = document.createElement('main');
@@ -59,7 +55,7 @@
   var descs = {
     personal: '「わたし」個人としての気分で選ぶ。今日どんな自分でいたいか。',
     business: '会議・商談・初対面。相手にどう見せたいかで、戦略的に選ぶ。仕事に色の力を借りる日に。',
-    kids: 'ぜんぶ ひらがな。きょうの きぶんで えらんでみよう。'
+    kids: 'きょうの きぶんで、すきな いろを えらんでみよう。'
   };
   /* 3つが並んだときに見分けがつくよう、顔の後ろの色をVerごとに変える */
   var faceBgs = { personal: '#FFE0EC', business: '#D6E8F7', kids: '#FFECAE' };
