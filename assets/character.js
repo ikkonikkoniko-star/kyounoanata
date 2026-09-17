@@ -203,6 +203,48 @@ function pen(fill, line, capFill, cx) {
     '</g>');
 }
 
+/* ---- キッズVerで金銀のときに出す小物 ----
+ * 靴下やハンカチが金属色だと絵として成立しないので、
+ * こどもが「これ知ってる」と思えるものに差し替える。 */
+
+/* 折り紙の紙飛行機。二枚の三角で、折り目を境に分ける */
+function paperPlane(fill, line, cx) {
+  return at(cx, '<g transform="rotate(-10 54 172)">' +
+    /* 後ろを V 字にえぐると、矢印ではなく紙を折ったものに見える */
+    '<path d="M96 172 L12 132 L44 172 L12 212 Z" fill="' + fill +
+      '" stroke="' + line + '" stroke-width="3" stroke-linejoin="round"/>' +
+    '<path d="M96 172 L44 172" fill="none" stroke="' + line + '" stroke-width="3"/>' +
+    '</g>');
+}
+
+/* おもちゃのメダル。リボンを交差させて首から下げた形にする */
+function medal(fill, line, cx) {
+  var star = '54,174 57.2,181.6 65.4,182.3 59.2,187.7 61.1,195.7 54,191.5 ' +
+             '46.9,195.7 48.8,187.7 42.6,182.3 50.8,181.6';
+  return at(cx, '<path d="M36 114 L48 114 L60 160 L50 166 Z" fill="' + fill +
+      '" stroke="' + line + '" stroke-width="3" stroke-linejoin="round"/>' +
+    '<path d="M72 114 L60 114 L48 160 L58 166 Z" fill="' + fill +
+      '" stroke="' + line + '" stroke-width="3" stroke-linejoin="round"/>' +
+    '<circle cx="54" cy="186" r="30" fill="' + fill + '" stroke="' + line + '" stroke-width="3"/>' +
+    '<circle cx="54" cy="186" r="22" fill="none" stroke="' + line + '" stroke-width="2"/>' +
+    '<polygon points="' + star + '" fill="' + line + '"/>');
+}
+
+/* トレーディングカード。絵の窓と、その下の文字の行を入れる */
+function tradingCard(fill, line, cx) {
+  var star = '54,140 57.9,149.3 68,150.1 60.3,156.7 62.7,166.5 54,161.2 ' +
+             '45.3,166.5 47.7,156.7 40,150.1 50.1,149.3';
+  return at(cx, '<g transform="rotate(-6 54 170)">' +
+    '<rect x="22" y="124" width="64" height="92" rx="7" fill="' + fill +
+      '" stroke="' + line + '" stroke-width="3"/>' +
+    '<rect x="30" y="132" width="48" height="44" rx="4" fill="' + FACE +
+      '" stroke="' + line + '" stroke-width="2.5"/>' +
+    '<polygon points="' + star + '" fill="' + line + '"/>' +
+    '<path d="M31 189h46M31 200h30" fill="none" stroke="' + line +
+      '" stroke-width="3" stroke-linecap="round"/>' +
+    '</g>');
+}
+
 /* ---------------- 人物 ----------------
  * 男女どちらにも見えるように、髪は左右対称のまるい形、
  * 肩幅と胴はやや細めにしている。 */
@@ -345,7 +387,8 @@ KI.renderCharacter = function (color, versionId) {
 
   var metalNow = colored && !!color.sheen;
   var items = isBusiness ? '左に腕時計、右にペン'
-            : isKids ? ('左に靴下、右に' + (metalNow ? '腕時計' : 'ハンカチ'))
+            : isKids ? (metalNow ? '左にトレーディングカード、右におもちゃのメダル'
+                                 : '左に靴下、右にハンカチ')
             : ((metalNow ? '左に腕時計' : '左にハンカチ') + '、右にバッグ');
   var label = colored
     ? '選ばれた色のTシャツを着たキャラクターと、同じ色の小物（' + items + '）'
@@ -359,11 +402,12 @@ KI.renderCharacter = function (color, versionId) {
   var metal = colored && !!color.sheen;
 
   var leftItem = isBusiness ? watch(left, leftLine, 54)
-               : isKids ? sock(left, leftLine, 54)
+               : isKids ? (metal ? tradingCard(left, leftLine, 54) : sock(left, leftLine, 54))
                : metal ? watch(left, leftLine, 54)
                : handkerchief(left, leftLine, 54);
   var rightItem = isBusiness ? pen(right, rightLine, colored ? KI.shade(hex, -0.5) : BLANK, 286)
-                : isKids ? (metal ? watch(right, rightLine, 286) : handkerchief(right, rightLine, 286))
+                : isKids ? (metal ? medal(right, rightLine, 286)
+                                  : handkerchief(right, rightLine, 286))
                 : bag(right, rightLine, 286);
 
   return [
