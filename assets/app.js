@@ -5,6 +5,12 @@
  */
 window.KI = window.KI || {};
 
+/* 横長のときは左にイラスト・右に結果で並ぶが、スマホでは縦に積まれる。
+ * 積まれているかどうかで、結果を出したあとのスクロール先を変える。 */
+function isStacked() {
+  return window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
+}
+
 var LOGO_COLORS = ['#E60033', '#F08300', '#F8B500', '#00A960', '#0068B7', '#884898'];
 var LOGO_TILTS = [-8, 5, -4, 7, -6, 4];
 
@@ -127,7 +133,13 @@ KI.init = function (versionId) {
     again.addEventListener('click', reset);
     result.appendChild(again);
 
-    result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    /* スマホでは結果に寄せるとイラストが画面の外に出てしまうので、
+     * イラストの頭から見えるようにスクロールする。結果はその下に続く。 */
+    if (isStacked()) {
+      stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   }
 
   function reset() {
