@@ -143,19 +143,42 @@ body {
 
 /* ---------- トップページ ---------- */
 .ki-index { max-width: 900px; margin: 0 auto; }
-.ki-lead { text-align: center; font-size: 16px; margin: 0 auto 34px; max-width: 620px; }
+.ki-lead {
+  text-align: center; font-size: 17px; font-weight: 700;
+  margin: 0 auto 26px; max-width: 30em;
+}
+.ki-pick {
+  text-align: center; margin: 0 0 20px;
+  font-size: 15px; font-weight: 700; color: var(--ki-muted);
+}
+
 .ki-cards { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
 .ki-card {
-  display: block; padding: 24px; text-decoration: none; color: var(--ki-ink);
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  padding: 22px 22px 20px; text-decoration: none; color: var(--ki-ink);
   background: #fff; border: 3px solid var(--ki-line); border-radius: var(--ki-round);
   box-shadow: 6px 6px 0 rgba(43,43,43,.12);
   transition: transform .15s ease, box-shadow .15s ease;
 }
-.ki-card:hover { transform: translate(-3px, -3px); box-shadow: 9px 9px 0 rgba(43,43,43,.14); }
-.ki-card h2 { margin: 0 0 8px; font-size: 21px; }
-.ki-card p { margin: 0; font-size: 14px; color: var(--ki-muted); }
-.ki-card-chips { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px; }
-.ki-card-chip {
-  padding: 3px 11px; border: 2px solid #e0d8c8; border-radius: 999px;
-  font-size: 12px; color: var(--ki-muted);
+.ki-card:hover { transform: translate(-3px, -5px); box-shadow: 9px 11px 0 rgba(43,43,43,.14); }
+
+/* 気持ちのボタンは出さず、キャラクターの顔だけを見せる */
+.ki-card-face {
+  width: 104px; height: 104px; margin-bottom: 12px;
+  display: flex; align-items: center; justify-content: center;
+  background: #FFF6E2; border: 3px solid var(--ki-line); border-radius: 50%;
+  overflow: hidden;
 }
+.ki-card-face .ki-face { width: 74%; height: 74%; display: block; }
+.ki-card:hover .ki-card-face { transform: scale(1.06); }
+.ki-card-face { transition: transform .15s ease; }
+
+.ki-card h2 { margin: 0 0 8px; font-size: 21px; }
+.ki-card p { margin: 0; font-size: 14px; line-height: 1.8; color: var(--ki-muted); text-align: left; }
+
+.ki-card-go {
+  margin-top: auto; padding-top: 16px;
+  font-size: 14px; font-weight: 800; color: var(--ki-ink);
+}
+.ki-card:hover .ki-card-go { text-decoration: underline; }
+

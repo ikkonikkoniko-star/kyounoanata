@@ -40,44 +40,60 @@
 
   var main = document.createElement('main');
   main.className = 'ki-index';
+
   var lead = document.createElement('p');
   lead.className = 'ki-lead';
-  lead.textContent = '「今日はどんな自分でいたいか」を選ぶと、そう見せてくれる色を1つ提案します。'
-    + 'その色を身につけた姿も一緒に出るので、着たときのイメージがすぐつかめます。';
+  lead.textContent = '今日のあなたは、何色でしょう。気分をひとつ選ぶだけで、今日をあと押しする色がひとつ決まります。';
   main.appendChild(lead);
+
+  var pick = document.createElement('p');
+  pick.className = 'ki-pick';
+  pick.textContent = 'まずは、どの自分で選びますか？';
+  main.appendChild(pick);
 
   var cards = document.createElement('div');
   cards.className = 'ki-cards';
+
+  /* 気持ちのボタンはここでは見せない。代わりにキャラクターの顔を出して、
+   * 3つのうちどれを選ぶか、で迷ってもらう。 */
   var descs = {
-    personal: '毎日の服選びに。友だちが背中を押してくれるようなトーンで提案します。',
-    business: '会議・商談・初対面に。相手にどう見えるかを軸に提案します。',
-    kids: 'こども向け。ぜんぶひらがなで、やさしく提案します。'
+    personal: '「わたし」個人としての気分で選ぶ。今日どんな自分でいたいか。',
+    business: '会議・商談・初対面。相手にどう見せたいかで、戦略的に選ぶ。仕事に色の力を借りる日に。',
+    kids: 'ぜんぶ ひらがな。きょうの きぶんで えらんでみよう。'
   };
+  /* 3つが並んだときに見分けがつくよう、顔の後ろの色をVerごとに変える */
+  var faceBgs = { personal: '#FFE0EC', business: '#D6E8F7', kids: '#FFECAE' };
+  var invites = {
+    personal: '気分を選んでみる',
+    business: '見せたい自分を選ぶ',
+    kids: 'きぶんを えらぶ'
+  };
+
   ['personal', 'business', 'kids'].forEach(function (id) {
     var v = KI.VERSIONS[id];
     var a = document.createElement('a');
     a.className = 'ki-card';
     a.href = id + '.html';
+
+    var face = document.createElement('div');
+    face.className = 'ki-card-face';
+    face.style.background = faceBgs[id];
+    face.innerHTML = KI.renderFace(id);
+    a.appendChild(face);
+
     var h2 = document.createElement('h2');
     h2.textContent = v.label;
     a.appendChild(h2);
+
     var p = document.createElement('p');
     p.textContent = descs[id];
     a.appendChild(p);
-    var cw = document.createElement('div');
-    cw.className = 'ki-card-chips';
-    /* 18個あるので、雰囲気が伝わる先頭4つだけ見せる */
-    KI.chipsFor(v).slice(0, 4).forEach(function (chip) {
-      var s = document.createElement('span');
-      s.className = 'ki-card-chip';
-      s.textContent = chip.label;
-      cw.appendChild(s);
-    });
-    var more = document.createElement('span');
-    more.className = 'ki-card-chip';
-    more.textContent = 'ほか' + (KI.chipsFor(v).length - 4) + 'つ';
-    cw.appendChild(more);
-    a.appendChild(cw);
+
+    var go = document.createElement('span');
+    go.className = 'ki-card-go';
+    go.textContent = invites[id] + ' →';
+    a.appendChild(go);
+
     cards.appendChild(a);
   });
   main.appendChild(cards);

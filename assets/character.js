@@ -378,3 +378,16 @@ KI.renderCharacter = function (color, versionId) {
     '</svg>'
   ].join('');
 };
+
+/* トップページ用。顔だけを切り出して描く。
+ * viewBox は、髪のてっぺんから顎までがちょうど収まる範囲にしている
+ * （大人は頭が小さく、キッズは頭が大きいので、Verごとに別の値）。 */
+KI.renderFace = function (versionId) {
+  var isKids = versionId === 'kids';
+  return [
+    '<svg class="ki-face" viewBox="' + (isKids ? '74 17 92 96' : '92 17 58 60') +
+      '" role="img" aria-label="キャラクターの顔">',
+    isKids ? kidsFace() : adultFace(),
+    '</svg>'
+  ].join('');
+};
