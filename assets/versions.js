@@ -37,6 +37,11 @@ KI.VERSIONS = {
     howtoLabel: 'こんなふうに色を入れてみる',
     howtoIcon: '👕',
     suggestion: function (color) {
+      /* 金銀は服に使う色ではないので、アクセサリーと小物の話にする */
+      if (color.sheen) {
+        return 'アクセサリーに' + color.name + 'を取り入れてみたり、小物に' +
+          color.name + 'を足してみましょう。';
+      }
       return '着る服に' + color.name + 'を取り入れてみたり、ハンカチなどの小物に' +
         color.name + 'を足してみましょう。';
     }
@@ -107,6 +112,11 @@ KI.VERSIONS = {
     howtoLabel: 'こんなふうに色を取り入れる',
     howtoIcon: '🧥',
     suggestion: function (color) {
+      /* 金銀は服に使う色ではないので、アクセサリーと小物の話にする */
+      if (color.sheen) {
+        return 'アクセサリーに' + color.name + 'を取り入れてみたり、小物に' +
+          color.name + 'を足してみましょう。';
+      }
       return '着るものに' + color.name + 'を取り入れてみたり、腕時計などの小物に' +
         color.name + 'を足してみましょう。';
     }

@@ -376,13 +376,22 @@ KI.renderCharacter = function (color, versionId) {
   var isBusiness = versionId === 'business';
 
   var metalNow = colored && !!color.sheen;
+
+  /* キッズVerの金銀は、小物だけを金属色にしてTシャツは塗らない。
+   * 金属のTシャツはこどもが着るものとして絵にならないため。 */
+  if (isKids && metalNow) {
+    tops = BLANK;
+    topsLine = LINE;
+  }
+
   var items = isBusiness ? '左に腕時計、右にペン'
             : isKids ? (metalNow ? '左にトレーディングカード、右におもちゃのメダル'
                                  : '左に靴下、右にハンカチ')
             : ((metalNow ? '左に腕時計' : '左にハンカチ') + '、右にバッグ');
-  var label = colored
-    ? '選ばれた色のTシャツを着たキャラクターと、同じ色の小物（' + items + '）'
-    : 'まだ色のついていないキャラクターと小物';
+  var label = !colored ? 'まだ色のついていないキャラクターと小物'
+    : (isKids && metalNow)
+      ? 'キャラクターと、選ばれた色の小物（' + items + '）'
+      : '選ばれた色のTシャツを着たキャラクターと、同じ色の小物（' + items + '）';
 
   var figure = isKids ? kidsFigure(tops, topsLine)
              : isBusiness ? businessFigure(tops, topsLine)
