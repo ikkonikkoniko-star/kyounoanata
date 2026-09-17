@@ -35,7 +35,7 @@ KI.VERSIONS = {
       'くろ': '気を引き締めたい'
     },
     howtoLabel: 'こんなふうに色を入れてみる',
-    howtoIcon: '👕',
+    howtoIcon: '🎨',
     suggestion: function (color) {
       /* 金銀は服に使う色ではないので、アクセサリーと小物の話にする */
       if (color.sheen) {
@@ -110,7 +110,7 @@ KI.VERSIONS = {
     },
 
     howtoLabel: 'こんなふうに色を取り入れる',
-    howtoIcon: '🧥',
+    howtoIcon: '🎨',
     suggestion: function (color) {
       /* 金銀は服に使う色ではないので、アクセサリーと小物の話にする */
       if (color.sheen) {

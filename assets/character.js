@@ -377,9 +377,10 @@ KI.renderCharacter = function (color, versionId) {
 
   var metalNow = colored && !!color.sheen;
 
-  /* キッズVerの金銀は、小物だけを金属色にしてTシャツは塗らない。
-   * 金属のTシャツはこどもが着るものとして絵にならないため。 */
-  if (isKids && metalNow) {
+  /* 金銀は3Verとも、小物だけを金属色にしてTシャツは塗らない。
+   * 金属の服は着るものとして絵にならず、文章のほうも
+   * 「服ではなくアクセサリーと小物に」と言っているため。 */
+  if (metalNow) {
     tops = BLANK;
     topsLine = LINE;
   }
@@ -389,7 +390,7 @@ KI.renderCharacter = function (color, versionId) {
                                  : '左に靴下、右にハンカチ')
             : ((metalNow ? '左に腕時計' : '左にハンカチ') + '、右にバッグ');
   var label = !colored ? 'まだ色のついていないキャラクターと小物'
-    : (isKids && metalNow)
+    : metalNow
       ? 'キャラクターと、選ばれた色の小物（' + items + '）'
       : '選ばれた色のTシャツを着たキャラクターと、同じ色の小物（' + items + '）';
 
