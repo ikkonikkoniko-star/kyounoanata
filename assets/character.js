@@ -217,6 +217,26 @@ function paperPlane(fill, line, cx) {
     '</g>');
 }
 
+/* 折り鶴。試作。ベタ塗り＋輪郭線だけだと羽と胴と首が一続きに見えてしまい、
+ * まだ鶴に読めていない。画面には出していない。採用するなら面ごとに濃さを変える必要がある。 */
+function origamiCrane(fill, line, cx) {
+  function part(d) {
+    return '<path d="' + d + '" fill="' + fill + '" stroke="' + line +
+      '" stroke-width="3" stroke-linejoin="round"/>';
+  }
+  return at(cx, '<g transform="rotate(-3 54 165)">' +
+    /* 羽は幅の広い三角。細いと鶴ではなく星のとげに見える */
+    part('M54 150 L8 102 L32 156 Z') +
+    part('M54 150 L100 102 L76 156 Z') +
+    /* 胴はぶら下がるひし形 */
+    part('M54 148 L80 172 L54 208 L28 172 Z') +
+    /* 首とくちばしは左へ、ほぼ水平に */
+    part('M42 160 L6 146 L0 157 L12 159 L44 176 Z') +
+    /* 尾は右へ */
+    part('M66 160 L104 148 L100 172 Z') +
+    '</g>');
+}
+
 /* おもちゃのメダル。リボンを交差させて首から下げた形にする */
 function medal(fill, line, cx) {
   var star = '54,174 57.2,181.6 65.4,182.3 59.2,187.7 61.1,195.7 54,191.5 ' +
