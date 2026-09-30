@@ -23,7 +23,7 @@ function el(tag, cls, text) {
 
 function buildLogo() {
   var h1 = el('h1', 'ki-logo');
-  'きょうのいろ'.split('').forEach(function (ch, i) {
+  'きょうのKOKOいろ'.split('').forEach(function (ch, i) {
     var span = el('span', 'ki-logo-char', ch);
     span.style.color = LOGO_COLORS[i % LOGO_COLORS.length];
     span.style.transform = 'rotate(' + LOGO_TILTS[i % LOGO_TILTS.length] + 'deg)';

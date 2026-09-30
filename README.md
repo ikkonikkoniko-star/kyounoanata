@@ -1,4 +1,4 @@
-# きょうのいろ — 今日の色 きせかえツール
+# きょうのKOKOいろ — 今日の色 きせかえツール
 
 「今日はどんな自分でいたいか」を選ぶと、そう見せてくれる色を1つ提案し、
 その色を身のまわりにどう取り入れるかを、キャラクターの絵と一緒に出すツールです。
@@ -116,7 +116,7 @@ Source を「Deploy from a branch」、Branch を `claude/kyou-no-iro-tool-p21vu
 
 ```html
 <iframe src="https://ikkonikkoniko-star.github.io/kyounoanata/"
-        style="width:100%;height:900px;border:0" title="きょうのいろ"></iframe>
+        style="width:100%;height:900px;border:0" title="きょうのKOKOいろ"></iframe>
 ```
 
 LINE公式アカウントで配る場合も、この URL をリッチメニューに設定すれば
