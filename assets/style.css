@@ -193,3 +193,10 @@ body {
   .ki-character { max-width: 260px; }
   .ki-result { padding: 18px; }
 }
+
+/* ---------- キッズVerの折り返し ----------
+ * ひらがなを分かち書きしているので、語の途中で改行させない。
+ * こうすると「はなまる」のような塊が2行に割れず、空白の位置だけで折り返す。 */
+body.ki-ver-kids .ki-howto-body,
+body.ki-ver-kids .ki-message,
+body.ki-ver-kids .ki-chip { word-break: keep-all; }
