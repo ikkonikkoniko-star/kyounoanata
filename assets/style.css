@@ -7,6 +7,7 @@
   --ki-line: #2b2b2b;
   --ki-muted: #6f6a63;
   --ki-accent: #F2B231;
+  --ki-koko: #FFD84A;   /* ロゴの「KOKO」の黄色 */
   --ki-round: 20px;
 }
 
@@ -38,10 +39,24 @@ body {
 .ki-nav-link:hover { background: #fff3d8; }
 .ki-nav-link.is-current { background: var(--ki-ink); color: #fff; }
 
-.ki-logo { margin: 0; font-size: clamp(38px, 9vw, 64px); line-height: 1.1; letter-spacing: .02em; }
+/* 「きょうのKOKOいろ」は10文字あるので、狭い画面では字を小さくして1行に収める。
+ * 途中で折り返すとロゴとして読めなくなるため、折り返しは禁止する。 */
+.ki-logo {
+  margin: 0; font-size: clamp(24px, 7.8vw, 60px);
+  line-height: 1.25; letter-spacing: .02em; white-space: nowrap;
+}
 .ki-logo-char { display: inline-block; }
-.ki-logo-char:nth-child(even) { transform-origin: bottom center; margin-top: 6px; }
-.ki-logo-char:nth-child(odd) { margin-bottom: 6px; }
+/* 「KOKO」だけ黄色にして、黒いふちで囲む。
+ * ふちは影を8方向に置いて作っている（文字そのものは細らせない）。
+ * 大きさを em で指定しているので、ロゴが縮んでもふちの太さが崩れない。 */
+.ki-logo-char.is-koko {
+  color: var(--ki-koko);
+  text-shadow:
+     .055em 0 var(--ki-line), -.055em 0 var(--ki-line),
+     0 .055em var(--ki-line),  0 -.055em var(--ki-line),
+     .04em .04em var(--ki-line), -.04em .04em var(--ki-line),
+     .04em -.04em var(--ki-line), -.04em -.04em var(--ki-line);
+}
 
 .ki-tagline { margin: 10px 0 0; color: var(--ki-muted); font-size: 14px; }
 

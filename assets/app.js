@@ -11,8 +11,9 @@ function isStacked() {
   return window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
 }
 
-var LOGO_COLORS = ['#E60033', '#F08300', '#F8B500', '#00A960', '#0068B7', '#884898'];
-var LOGO_TILTS = [-8, 5, -4, 7, -6, 4];
+/* ロゴのうち「KOKO」だけ見た目を変える。色づけは style.css 側。 */
+var LOGO_TEXT = 'きょうのKOKOいろ';
+var LOGO_MARK = [4, 5, 6, 7];
 
 function el(tag, cls, text) {
   var n = document.createElement(tag);
@@ -23,11 +24,9 @@ function el(tag, cls, text) {
 
 function buildLogo() {
   var h1 = el('h1', 'ki-logo');
-  'きょうのKOKOいろ'.split('').forEach(function (ch, i) {
-    var span = el('span', 'ki-logo-char', ch);
-    span.style.color = LOGO_COLORS[i % LOGO_COLORS.length];
-    span.style.transform = 'rotate(' + LOGO_TILTS[i % LOGO_TILTS.length] + 'deg)';
-    h1.appendChild(span);
+  LOGO_TEXT.split('').forEach(function (ch, i) {
+    var cls = 'ki-logo-char' + (LOGO_MARK.indexOf(i) !== -1 ? ' is-koko' : '');
+    h1.appendChild(el('span', cls, ch));
   });
   return h1;
 }
