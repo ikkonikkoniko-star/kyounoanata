@@ -52,15 +52,13 @@ body {
 }
 .ki-logo-char { display: inline-block; }
 /* 「KOKO」だけ黄色にして、黒いふちで囲む。
- * ふちは影を8方向に置いて作っている（文字そのものは細らせない）。
- * 大きさを em で指定しているので、ロゴが縮んでもふちの太さが崩れない。 */
+ * ふちは線で描く。影を八方向に置く方法だと角がギザギザに見えるため。
+ * paint-order で線を文字の下に回し、文字が細らないようにしている。
+ * 太さは em なので、ロゴが縮んでも見た目の比率が変わらない。 */
 .ki-logo-char.is-koko {
   color: var(--ki-koko);
-  text-shadow:
-     .055em 0 var(--ki-line), -.055em 0 var(--ki-line),
-     0 .055em var(--ki-line),  0 -.055em var(--ki-line),
-     .04em .04em var(--ki-line), -.04em .04em var(--ki-line),
-     .04em -.04em var(--ki-line), -.04em -.04em var(--ki-line);
+  -webkit-text-stroke: .07em var(--ki-line);
+  paint-order: stroke fill;
 }
 
 .ki-tagline { margin: 10px 0 0; color: var(--ki-muted); font-size: 14px; }
