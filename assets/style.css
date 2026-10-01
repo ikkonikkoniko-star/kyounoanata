@@ -41,9 +41,14 @@ body {
 
 /* 「きょうのKOKOいろ」は10文字あるので、狭い画面では字を小さくして1行に収める。
  * 途中で折り返すとロゴとして読めなくなるため、折り返しは禁止する。 */
+/* ロゴだけ本文と別あつかい。「きょうの」「いろ」をKOKOと同じ重さ・同じ角ゴシックにそろえる。
+ * 本文は丸ゴシック優先だが、ロゴで丸ゴシックを使うとKOKOの英字と形が合わない。 */
 .ki-logo {
   margin: 0; font-size: clamp(24px, 7.8vw, 60px);
   line-height: 1.25; letter-spacing: .02em; white-space: nowrap;
+  font-weight: 900;
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Yu Gothic UI",
+               "Noto Sans JP", Meiryo, system-ui, sans-serif;
 }
 .ki-logo-char { display: inline-block; }
 /* 「KOKO」だけ黄色にして、黒いふちで囲む。
