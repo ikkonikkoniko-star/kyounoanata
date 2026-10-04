@@ -15,6 +15,20 @@ function isStacked() {
 var LOGO_TEXT = 'きょうのKOKOいろ';
 var LOGO_MARK = [4, 5, 6, 7];
 
+/* チップの並びは画面を開くたびに変える。
+ * 並び順が固定だと、いつも上のほうにある同じ気持ちを押してしまい、
+ * 毎日同じ色になってしまう。どの気持ちがどの色になるかは変えない。 */
+function shuffled(list) {
+  var a = list.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i];
+    a[i] = a[j];
+    a[j] = t;
+  }
+  return a;
+}
+
 function el(tag, cls, text) {
   var n = document.createElement(tag);
   if (cls) n.className = cls;
@@ -78,7 +92,7 @@ KI.init = function (versionId) {
   chipWrap.appendChild(el('p', 'ki-chip-label',
     version.chipHint || '気持ちにいちばん近いものを選んでください'));
   var chips = el('div', 'ki-chips');
-  KI.chipsFor(version).forEach(function (chip) {
+  shuffled(KI.chipsFor(version)).forEach(function (chip) {
     var b = el('button', 'ki-chip', chip.label);
     b.type = 'button';
     b.addEventListener('click', function () { show(chip.label, chip.color); });
