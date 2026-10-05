@@ -253,9 +253,9 @@ body {
       rgba(255,251,242,.86) 0%, rgba(255,251,242,.66) 34%, rgba(255,251,242,0) 54%);
   }
   .ki-hero .ki-logo {
-    position: static; text-align: left; font-size: clamp(26px, 5vw, 54px);
+    position: static; text-align: left; font-size: clamp(28px, 5.6vw, 66px);
   }
-  .ki-hero-copy { margin: auto 0 0; width: 42%; }
+  .ki-hero-copy { margin: auto 0 0; width: 48%; }
   .ki-hero .ki-lead {
     margin: 0; max-width: none; text-align: left;
     font-size: clamp(17px, 2.1vw, 21px); line-height: 1.95;
@@ -285,7 +285,16 @@ body {
   box-shadow: 6px 6px 0 rgba(43,43,43,.12);
   transition: transform .15s ease, box-shadow .15s ease;
 }
-.ki-card:hover { transform: translate(-3px, -5px); box-shadow: 9px 11px 0 rgba(43,43,43,.14); }
+/* 動きだけだと選べているか分かりにくいので、背景も変える。
+ * 指で触る端末には hover が無いので、押している間（:active）も同じ色にする。 */
+.ki-card:hover,
+.ki-card:active,
+.ki-card:focus-visible {
+  background: #FFF3D8;
+  transform: translate(-3px, -5px);
+  box-shadow: 9px 11px 0 rgba(43,43,43,.14);
+}
+.ki-card:focus-visible { outline: 3px solid #0068B7; outline-offset: 3px; }
 
 /* 気持ちのボタンは出さず、キャラクターの顔だけを見せる */
 .ki-card-face {
@@ -298,12 +307,13 @@ body {
 .ki-card:hover .ki-card-face { transform: scale(1.06); }
 .ki-card-face { transition: transform .15s ease; }
 
-.ki-card h2 { margin: 0 0 10px; font-size: 24px; }
-.ki-card p { margin: 0; font-size: 15.5px; line-height: 1.85; color: var(--ki-muted); text-align: left; }
+.ki-card h2 { margin: 0 0 10px; font-size: 25px; }
+/* 説明文は薄いと読みにくいので、本文の色に近づけて少し大きくする */
+.ki-card p { margin: 0; font-size: 17px; line-height: 1.85; color: #4F4A42; text-align: left; }
 
 .ki-card-go {
   margin-top: auto; padding-top: 18px;
-  font-size: 15.5px; font-weight: 800; color: var(--ki-ink);
+  font-size: 16px; font-weight: 800; color: var(--ki-ink);
 }
 .ki-card:hover .ki-card-go { text-decoration: underline; }
 
