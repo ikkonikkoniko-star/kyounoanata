@@ -12,13 +12,28 @@
 <script src="assets/colors.js"></script>
 <script src="assets/character.js"></script>
 <script src="assets/versions.js"></script>
+<script src="assets/voices.js"></script>
 <script src="assets/app.js"></script>
 <script>
 (function () {
   var root = document.getElementById('app');
 
-  var header = document.createElement('header');
-  header.className = 'ki-header';
+  var main = document.createElement('main');
+  main.className = 'ki-index';
+
+  /* --- 写真と、その上に重ねる名前・リード文 --- */
+  var hero = document.createElement('div');
+  hero.className = 'ki-hero';
+
+  var img = document.createElement('img');
+  img.className = 'ki-hero-img';
+  img.src = 'assets/hero.webp';
+  img.alt = '';
+  hero.appendChild(img);
+
+  var heroText = document.createElement('div');
+  heroText.className = 'ki-hero-text';
+
   var h1 = document.createElement('h1');
   h1.className = 'ki-logo';
   /* ロゴのうち「KOKO」だけ見た目を変える。色づけは style.css 側。 */
@@ -28,16 +43,15 @@
     s.textContent = ch;
     h1.appendChild(s);
   });
-  header.appendChild(h1);
-  root.appendChild(header);
-
-  var main = document.createElement('main');
-  main.className = 'ki-index';
+  heroText.appendChild(h1);
 
   var lead = document.createElement('p');
   lead.className = 'ki-lead';
   lead.textContent = '今日のあなたは、何色でしょう。気分をひとつ選ぶだけで、今日をあと押しする色がひとつ決まります。';
-  main.appendChild(lead);
+  heroText.appendChild(lead);
+
+  hero.appendChild(heroText);
+  main.appendChild(hero);
 
   var pick = document.createElement('p');
   pick.className = 'ki-pick';
@@ -95,5 +109,3 @@
 </script>
 </body>
 </html>
-
-<!-- GitHub Pages の公開日: 2026-09-17 -->

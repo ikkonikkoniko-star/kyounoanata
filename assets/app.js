@@ -45,6 +45,96 @@ function buildLogo() {
   return h1;
 }
 
+/* 締めの一文を読み上げる再生バー。
+ * 吹き出しの中身は再生ボタンだけで、文章は本文のほうに残したまま。
+ * 音が出せない場所で開く人がいるので、文字を消してしまわない。
+ * 声のファイルが無い色では、そもそもこれを作らない（voices.js を見る）。 */
+var VOICE_BARS = 26;
+var VOICE_PLAY = '<svg viewBox="0 0 12 14" aria-hidden="true">' +
+  '<path d="M1 1 L11 7 L1 13 Z" fill="#2b2b2b"/></svg>';
+var VOICE_STOP = '<svg viewBox="0 0 12 14" aria-hidden="true">' +
+  '<rect x="1.5" y="1.5" width="3.4" height="11" fill="#2b2b2b"/>' +
+  '<rect x="7.1" y="1.5" width="3.4" height="11" fill="#2b2b2b"/></svg>';
+
+function buildVoice(src, label) {
+  var wrap = el('div', 'ki-say');
+
+  var face = el('div', 'ki-say-face');
+  var img = document.createElement('img');
+  img.src = 'assets/face.png';
+  img.alt = '';
+  face.appendChild(img);
+  wrap.appendChild(face);
+
+  var bubble = el('div', 'ki-say-bubble');
+  var btn = el('button', 'voice');
+  btn.type = 'button';
+  btn.setAttribute('aria-label', label + '　を声で聞く');
+
+  var icon = el('span', 'voice-btn');
+  icon.setAttribute('aria-hidden', 'true');
+  icon.innerHTML = VOICE_PLAY;
+  btn.appendChild(icon);
+
+  /* 波形は見た目だけのもの。音の中身は見ていない。 */
+  var wave = el('span', 'voice-wave');
+  wave.setAttribute('aria-hidden', 'true');
+  var bars = [];
+  for (var i = 0; i < VOICE_BARS; i++) {
+    var bar = document.createElement('i');
+    bar.style.height = (28 + Math.round(Math.abs(Math.sin(i * 1.7)) * 52 + (i % 3) * 6)) + '%';
+    wave.appendChild(bar);
+    bars.push(bar);
+  }
+  btn.appendChild(wave);
+
+  var time = el('span', 'voice-time', '0:00');
+  btn.appendChild(time);
+  bubble.appendChild(btn);
+  wrap.appendChild(bubble);
+
+  var audio = new Audio(src);
+  audio.preload = 'metadata';
+
+  function fmt(sec) {
+    var s = Math.max(0, Math.round(sec || 0));
+    return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2);
+  }
+  function mark(ratio) {
+    var on = Math.round(ratio * bars.length);
+    for (var i = 0; i < bars.length; i++) {
+      if (i < on) bars[i].className = 'is-on';
+      else bars[i].className = '';
+    }
+  }
+  function stop() {
+    btn.className = 'voice';
+    icon.innerHTML = VOICE_PLAY;
+    mark(0);
+    time.textContent = fmt(audio.duration);
+  }
+
+  audio.addEventListener('loadedmetadata', function () { time.textContent = fmt(audio.duration); });
+  audio.addEventListener('timeupdate', function () {
+    if (!audio.duration) return;
+    mark(audio.currentTime / audio.duration);
+    time.textContent = fmt(audio.duration - audio.currentTime);
+  });
+  audio.addEventListener('ended', function () { audio.currentTime = 0; stop(); });
+
+  btn.addEventListener('click', function () {
+    if (!audio.paused) { audio.pause(); audio.currentTime = 0; stop(); return; }
+    /* 鳴らせない端末もあるので、失敗しても画面が止まらないようにする */
+    var p = audio.play();
+    if (p && p['catch']) p['catch'](function () { stop(); });
+    btn.className = 'voice is-playing';
+    icon.innerHTML = VOICE_STOP;
+  });
+
+  mark(0);
+  return wrap;
+}
+
 function buildNav(current) {
   var nav = el('nav', 'ki-nav');
   [
@@ -139,6 +229,9 @@ KI.init = function (versionId) {
     howtoHead.appendChild(el('h2', 'ki-howto-label', version.howtoLabel));
     howto.appendChild(howtoHead);
     howto.appendChild(el('p', 'ki-howto-body', data.howto));
+    /* 声が録れている色だけ、締めの一文の再生バーを出す */
+    var voice = KI.voiceFor(versionId, color);
+    if (voice) howto.appendChild(buildVoice(voice, KI.textFor(version, color).closing));
     result.appendChild(howto);
 
     var again = el('button', 'ki-again', 'もう一度きく');

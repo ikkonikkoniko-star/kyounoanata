@@ -159,6 +159,90 @@ body {
 }
 .ki-again:hover { background: #444; }
 
+/* ---------- 播本さんの声 ----------
+ * 吹き出しの中身は再生ボタンだけ。締めの一文は本文のほうに残してある。
+ * 音が出せない場所で開く人がいるので、文字を声に置きかえてしまわない。 */
+.ki-say { display: flex; align-items: flex-start; gap: 11px; margin-top: 14px; }
+.ki-say-face {
+  width: 56px; height: 56px; flex: none; border-radius: 50%;
+  border: 3px solid var(--ki-line); overflow: hidden;
+}
+.ki-say-face img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.ki-say-bubble {
+  position: relative; flex: 1; min-width: 0;
+  padding: 11px 14px;
+  background: #FFF6E2; border: 2px solid var(--ki-line); border-radius: 14px;
+}
+/* 吹き出しのしっぽ。顔のほうを向かせる */
+.ki-say-bubble::before,
+.ki-say-bubble::after {
+  content: ""; position: absolute; top: 18px; width: 0; height: 0;
+  border: 8px solid transparent;
+}
+.ki-say-bubble::before { left: -17px; border-right-color: var(--ki-line); }
+.ki-say-bubble::after  { left: -13px; border-right-color: #FFF6E2; }
+
+.voice {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  margin: 0; padding: 0; cursor: pointer; font: inherit; text-align: left;
+  background: none; border: none; color: inherit;
+}
+.voice:focus-visible { outline: 3px solid #0068B7; outline-offset: 4px; border-radius: 10px; }
+.voice-btn {
+  width: 34px; height: 34px; flex: none; border-radius: 50%;
+  border: 2px solid var(--ki-line); background: var(--ki-mustard);
+  display: flex; align-items: center; justify-content: center;
+}
+.voice-btn svg { width: 14px; height: 14px; display: block; }
+.voice-wave { display: flex; align-items: center; gap: 2.5px; flex: 1; min-width: 0; height: 26px; }
+.voice-wave i {
+  display: block; flex: 1; min-width: 0; max-width: 4px; border-radius: 2px;
+  background: #D8CDB4; height: 30%;
+}
+.voice-wave i.is-on { background: var(--ki-line); }
+.voice.is-playing .voice-wave i.is-on { animation: ki-bounce .5s ease-in-out infinite alternate; }
+@keyframes ki-bounce { to { transform: scaleY(1.45); } }
+.voice-time {
+  flex: none; font-size: 12.5px; font-weight: 800; color: var(--ki-muted);
+  font-variant-numeric: tabular-nums;
+}
+@media (prefers-reduced-motion: reduce) {
+  .voice.is-playing .voice-wave i.is-on { animation: none; }
+}
+
+/* ---------- トップページの写真 ----------
+ * 写真の左側が壁で空いているので、そこに名前とリード文を重ねる。
+ * ただし狭い画面では重ねる余白が足りないので、写真の下に置く。 */
+.ki-hero {
+  position: relative; overflow: hidden; background: #EDEAE4;
+  border: 3px solid var(--ki-line); border-radius: var(--ki-round);
+  box-shadow: 6px 6px 0 rgba(43,43,43,.12);
+}
+.ki-hero-img {
+  display: block; width: 100%; max-width: 100%;
+  aspect-ratio: 4 / 3; object-fit: cover; object-position: right center;
+}
+.ki-hero-text {
+  padding: 18px 16px 20px; text-align: center; background: var(--ki-card);
+}
+.ki-hero .ki-logo { font-size: clamp(23px, 7.4vw, 40px); }
+.ki-hero .ki-lead { margin: 10px auto 0; max-width: 26em; font-size: 15.5px; }
+
+/* 横に余裕があるときだけ、写真の空いた左側に文字を重ねる */
+@media (min-width: 761px) {
+  .ki-hero-img { aspect-ratio: 16 / 9; object-position: center; }
+  .ki-hero-text {
+    position: absolute; top: 0; bottom: 0; left: 0; width: 52%;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 0 0 0 clamp(20px, 3.6vw, 40px);
+    text-align: left;
+    background: linear-gradient(96deg,
+      rgba(255,251,242,.97) 0%, rgba(255,251,242,.93) 52%, rgba(255,251,242,0) 100%);
+  }
+  .ki-hero .ki-logo { font-size: clamp(22px, 3.4vw, 40px); }
+  .ki-hero .ki-lead { margin: 12px 0 0; max-width: 20em; text-align: left; }
+}
+
 /* ---------- トップページ ---------- */
 .ki-index { max-width: 900px; margin: 0 auto; }
 .ki-lead {
