@@ -52,7 +52,11 @@
 
   var lead = document.createElement('p');
   lead.className = 'ki-lead';
-  lead.textContent = '今日のあなたは、何色でしょう。気分をひとつ選ぶだけで、今日をあと押しする色がひとつ決まります。';
+  /* 「気分をひとつ選ぶだけで」から下の段にする。
+   * 自然に折り返させると「気／分」のように語の途中で切れてしまう。 */
+  lead.appendChild(document.createTextNode('今日のあなたは、何色でしょう。'));
+  lead.appendChild(document.createElement('br'));
+  lead.appendChild(document.createTextNode('気分をひとつ選ぶだけで、今日をあと押しする色がひとつ決まります。'));
   copy.appendChild(lead);
 
   var pick = document.createElement('p');
