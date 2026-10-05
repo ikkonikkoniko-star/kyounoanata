@@ -214,7 +214,7 @@ body {
  * 写真の左側が壁で空いているので、そこに名前とリード文を重ねる。
  * ただし狭い画面では重ねる余白が足りないので、写真の下に置く。 */
 .ki-hero {
-  position: relative; overflow: hidden; background: #EDEAE4;
+  position: relative; overflow: hidden; background: #EDEAE4; margin-bottom: 26px;
   border: 3px solid var(--ki-line); border-radius: var(--ki-round);
   box-shadow: 6px 6px 0 rgba(43,43,43,.12);
 }
@@ -281,7 +281,7 @@ body {
 
 /* 気持ちのボタンは出さず、キャラクターの顔だけを見せる */
 .ki-card-face {
-  width: 104px; height: 104px; margin-bottom: 12px;
+  width: 84px; height: 84px; margin-bottom: 14px;
   display: flex; align-items: center; justify-content: center;
   background: #FFF6E2; border: 3px solid var(--ki-line); border-radius: 50%;
   overflow: hidden;
@@ -290,12 +290,12 @@ body {
 .ki-card:hover .ki-card-face { transform: scale(1.06); }
 .ki-card-face { transition: transform .15s ease; }
 
-.ki-card h2 { margin: 0 0 8px; font-size: 21px; }
-.ki-card p { margin: 0; font-size: 14px; line-height: 1.8; color: var(--ki-muted); text-align: left; }
+.ki-card h2 { margin: 0 0 10px; font-size: 24px; }
+.ki-card p { margin: 0; font-size: 15.5px; line-height: 1.85; color: var(--ki-muted); text-align: left; }
 
 .ki-card-go {
-  margin-top: auto; padding-top: 16px;
-  font-size: 14px; font-weight: 800; color: var(--ki-ink);
+  margin-top: auto; padding-top: 18px;
+  font-size: 15.5px; font-weight: 800; color: var(--ki-ink);
 }
 .ki-card:hover .ki-card-go { text-decoration: underline; }
 
