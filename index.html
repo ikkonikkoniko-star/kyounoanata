@@ -45,18 +45,24 @@
   });
   heroText.appendChild(h1);
 
+  /* リード文と「まずは〜」は、写真の下のほうの空いたところにまとめて置く。
+   * 名前は写真の上のほう。間が空くので、2つを別の箱に分けている。 */
+  var copy = document.createElement('div');
+  copy.className = 'ki-hero-copy';
+
   var lead = document.createElement('p');
   lead.className = 'ki-lead';
   lead.textContent = '今日のあなたは、何色でしょう。気分をひとつ選ぶだけで、今日をあと押しする色がひとつ決まります。';
-  heroText.appendChild(lead);
-
-  hero.appendChild(heroText);
-  main.appendChild(hero);
+  copy.appendChild(lead);
 
   var pick = document.createElement('p');
   pick.className = 'ki-pick';
   pick.textContent = 'まずは、どの自分で選びますか？';
-  main.appendChild(pick);
+  copy.appendChild(pick);
+
+  heroText.appendChild(copy);
+  hero.appendChild(heroText);
+  main.appendChild(hero);
 
   var cards = document.createElement('div');
   cards.className = 'ki-cards';

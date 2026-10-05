@@ -226,21 +226,34 @@ body {
   padding: 18px 16px 20px; text-align: center; background: var(--ki-card);
 }
 .ki-hero .ki-logo { font-size: clamp(23px, 7.4vw, 40px); }
-.ki-hero .ki-lead { margin: 10px auto 0; max-width: 26em; font-size: 15.5px; }
+.ki-hero-copy { margin-top: 10px; }
+.ki-hero .ki-lead { margin: 0 auto; max-width: 26em; font-size: 15.5px; }
+.ki-hero .ki-pick { margin: 10px 0 0; }
 
-/* 横に余裕があるときだけ、写真の空いた左側に文字を重ねる */
+/* 横に余裕があるときだけ、写真の空いたところに文字を重ねる。
+ * 名前は上の帯、リード文と「まずは〜」は左下のあき。
+ * 人物にかからない範囲なので、下のほうの字は大きくできる。 */
 @media (min-width: 761px) {
   .ki-hero-img { aspect-ratio: 16 / 9; object-position: center; }
   .ki-hero-text {
-    position: absolute; top: 0; bottom: 0; left: 0; width: 52%;
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 0 0 0 clamp(20px, 3.6vw, 40px);
-    text-align: left;
-    background: linear-gradient(96deg,
-      rgba(255,251,242,.97) 0%, rgba(255,251,242,.93) 52%, rgba(255,251,242,0) 100%);
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: flex-start;
+    padding: 5% 0 13% clamp(20px, 3.6vw, 44px);
+    /* 壁がもともと白いので、うすくかけるだけで字は読める。
+     * 濃くすると「心」の文字が消えてしまう。 */
+    text-align: left; background: linear-gradient(96deg,
+      rgba(255,251,242,.86) 0%, rgba(255,251,242,.66) 34%, rgba(255,251,242,0) 54%);
   }
-  .ki-hero .ki-logo { font-size: clamp(22px, 3.4vw, 40px); }
-  .ki-hero .ki-lead { margin: 12px 0 0; max-width: 20em; text-align: left; }
+  .ki-hero .ki-logo { font-size: clamp(26px, 5vw, 54px); }
+  .ki-hero-copy { margin: auto 0 0; width: 42%; }
+  .ki-hero .ki-lead {
+    margin: 0; max-width: none; text-align: left;
+    font-size: clamp(17px, 2.1vw, 21px); line-height: 1.95;
+  }
+  .ki-hero .ki-pick {
+    margin: 14px 0 0; text-align: left;
+    font-size: clamp(15px, 1.9vw, 19px);
+  }
 }
 
 /* ---------- トップページ ---------- */
