@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>きょうのKOKOいろ（確認用）</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%8E%A8%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/kakunin.css">
+<meta name="robots" content="noindex">
+</head>
+<body>
+<div class="pv-bar">
+  <div class="pv-group">
+    <span class="pv-label">写真</span>
+    <button class="pv-btn" id="bFrame" type="button" aria-pressed="true">枠あり</button>
+    <button class="pv-btn" id="bBand" type="button" aria-pressed="false">帯</button>
+  </div>
+  <div class="pv-group">
+    <span class="pv-label">携帯のタイトル</span>
+    <button class="pv-btn" id="bAbove" type="button" aria-pressed="true">写真の上</button>
+    <button class="pv-btn" id="bBelow" type="button" aria-pressed="false">写真の下</button>
+  </div>
+  <span class="pv-hint">※ 確認用のページです。切り替えて見くらべてください</span>
+</div>
+<div id="app"></div>
+<script src="assets/colors.js"></script>
+<script src="assets/character.js"></script>
+<script src="assets/versions.js"></script>
+<script src="assets/voices.js"></script>
+<script src="assets/app.js"></script>
+<script>
+(function () {
+  var root = document.getElementById('app');
+
+  var main = document.createElement('main');
+  main.className = 'ki-index';
+
+  /* --- 写真と、その上に重ねる名前・リード文 --- */
+  var hero = document.createElement('div');
+  hero.className = 'ki-hero';
+
+  var img = document.createElement('img');
+  img.className = 'ki-hero-img';
+  img.src = 'assets/hero.webp';
+  img.alt = '';
+  hero.appendChild(img);
+
+  var heroText = document.createElement('div');
+  heroText.className = 'ki-hero-text';
+
+  var h1 = document.createElement('h1');
+  h1.className = 'ki-logo';
+  /* ロゴのうち「KOKO」だけ見た目を変える。色づけは style.css 側。 */
+  'きょうのKOKOいろ'.split('').forEach(function (ch, i) {
+    var s = document.createElement('span');
+    s.className = 'ki-logo-char' + (i >= 4 && i <= 7 ? ' is-koko' : '');
+    s.textContent = ch;
+    h1.appendChild(s);
+  });
+  heroText.appendChild(h1);
+
+  /* リード文と「まずは〜」は、写真の下のほうの空いたところにまとめて置く。
+   * 名前は写真の上のほう。間が空くので、2つを別の箱に分けている。 */
+  var copy = document.createElement('div');
+  copy.className = 'ki-hero-copy';
+
+  var lead = document.createElement('p');
+  lead.className = 'ki-lead';
+  /* 「気分をひとつ選ぶだけで」から下の段にする。
+   * 自然に折り返させると「気／分」のように語の途中で切れてしまう。 */
+  lead.appendChild(document.createTextNode('今日のあなたは何色？'));
+  lead.appendChild(document.createElement('br'));
+  lead.appendChild(document.createTextNode('今の気分を選んでいただくと、あなたを後押しする色を一つご提案します！'));
+  copy.appendChild(lead);
+
+  var pick = document.createElement('p');
+  pick.className = 'ki-pick';
+  pick.textContent = 'まずは、どの自分で選びますか？';
+  copy.appendChild(pick);
+
+  heroText.appendChild(copy);
+  hero.appendChild(heroText);
+  main.appendChild(hero);
+
+  var cards = document.createElement('div');
+  cards.className = 'ki-cards';
+
+  /* 気持ちのボタンはここでは見せない。代わりにキャラクターの顔を出して、
+   * 3つのうちどれを選ぶか、で迷ってもらう。 */
+  var descs = {
+    personal: '「わたし」個人としての気分で選ぶ。今日どんな自分でいたいか。',
+    business: '会議・商談・初対面。相手にどう見せたいかで、戦略的に選ぶ。仕事に色の力を借りる日に。',
+    kids: 'きょうの きぶんで、すきな いろを えらんでみよう。'
+  };
+  /* 3つが並んだときに見分けがつくよう、顔の後ろの色をVerごとに変える */
+  var faceBgs = { personal: '#FFE0EC', business: '#D6E8F7', kids: '#FFECAE' };
+  var invites = {
+    personal: '気分を選んでみる',
+    business: '見せたい自分を選ぶ',
+    kids: 'きぶんを えらぶ'
+  };
+
+  ['personal', 'business', 'kids'].forEach(function (id) {
+    var v = KI.VERSIONS[id];
+    var a = document.createElement('a');
+    a.className = 'ki-card';
+    a.href = id + '.html';
+
+    var face = document.createElement('div');
+    face.className = 'ki-card-face';
+    face.style.background = faceBgs[id];
+    face.innerHTML = KI.renderFace(id);
+    a.appendChild(face);
+
+    var h2 = document.createElement('h2');
+    h2.textContent = v.label;
+    a.appendChild(h2);
+
+    var p = document.createElement('p');
+    p.textContent = descs[id];
+    a.appendChild(p);
+
+    var go = document.createElement('span');
+    go.className = 'ki-card-go';
+    go.textContent = invites[id] + ' →';
+    a.appendChild(go);
+
+    cards.appendChild(a);
+  });
+  main.appendChild(cards);
+  root.appendChild(main);
+})();
+</script>
+<script>
+/* 確認用の切り替え。html に目印を付けたり外したりするだけで、
+ * 中身（色やボタン）はトップページとまったく同じものを使っている。 */
+(function () {
+  var root = document.documentElement;
+  function pair(onId, offId, cls) {
+    var on = document.getElementById(onId), off = document.getElementById(offId);
+    function set(use) {
+      if (use) root.classList.add(cls); else root.classList.remove(cls);
+      on.setAttribute('aria-pressed', use ? 'true' : 'false');
+      off.setAttribute('aria-pressed', use ? 'false' : 'true');
+    }
+    on.addEventListener('click', function () { set(true); });
+    off.addEventListener('click', function () { set(false); });
+  }
+  pair('bBand', 'bFrame', 'is-band');
+  pair('bBelow', 'bAbove', 'is-title-below');
+})();
+</script>
+</body>
+</html>

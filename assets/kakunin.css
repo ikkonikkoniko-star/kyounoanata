@@ -1,0 +1,55 @@
+
+/* ===================================================================
+ * 確認ページ（kakunin.html）だけで使う切り替え。
+ * トップページ（index.html）はこのファイルを読み込まないので、
+ * 公開中の見た目には影響しない。
+ *   .is-band        … 写真を枠なしで横いっぱいに（帯）
+ *   .is-title-below … 携帯でタイトルを写真の下に置く
+ * =================================================================== */
+
+/* ---- 帯 ---- */
+.is-band { overflow-x: clip; }
+.is-band .ki-hero {
+  border: 0; border-radius: 0; box-shadow: none;
+  width: 100vw; margin-inline: calc(50% - 50vw);
+}
+.is-band .ki-hero-img {
+  aspect-ratio: 16 / 9; max-height: 620px;
+  object-fit: cover; object-position: 50% 28%;
+}
+@media (min-width: 761px) {
+  .is-band .ki-hero-text { padding-left: clamp(20px, 6vw, 110px); }
+  .is-band .ki-hero-copy { width: min(42%, 460px); }
+}
+@media (max-width: 760px) {
+  .is-band .ki-hero-img { aspect-ratio: 4 / 3; max-height: none; object-position: right center; }
+  .is-band .ki-hero-text { padding-inline: 18px; }
+}
+
+/* ---- 携帯でタイトルを写真の下に ---- */
+@media (max-width: 760px) {
+  .is-title-below .ki-hero .ki-logo {
+    position: static; text-align: center; font-size: clamp(23px, 7.4vw, 40px);
+  }
+  .is-title-below .ki-hero-text { padding-top: 18px; }
+  .is-title-below .ki-hero-copy { margin-top: 10px; }
+}
+
+/* ---- 切り替えバー（プレビューだけ） ---- */
+.pv-bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50;
+  margin: 0 0 14px; padding: 11px 14px;
+  background: #FFF3F0; border-bottom: 2px dashed #C9553D;
+  display: flex; gap: 16px; flex-wrap: wrap; align-items: center;
+  font-size: 13px; color: #7A3326;
+}
+.pv-group { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; }
+.pv-label { font-weight: 800; }
+.pv-btn {
+  padding: 6px 15px; cursor: pointer; font: inherit; font-size: 13px; font-weight: 800;
+  background: #fff; color: #7A3326;
+  border: 2px solid #C9553D; border-radius: 999px;
+}
+.pv-btn[aria-pressed="true"] { background: #C9553D; color: #fff; }
+.pv-btn:focus-visible { outline: 3px solid #0068B7; outline-offset: 2px; }
+.pv-hint { font-size: 12px; }
