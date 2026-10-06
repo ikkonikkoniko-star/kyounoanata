@@ -36,9 +36,6 @@ KI.ROMA = {
 
 /* 届いた録音をここに足す。ここに無い色は再生ボタンを出さない。 */
 KI.VOICES = {
-  'personal-aka': 'personal-aka.m4a',
-  'personal-orange': 'personal-orange.m4a',
-  'personal-kiiro': 'personal-kiiro.m4a'
 };
 
 /* その色の声があればファイルの場所を、無ければ null を返す。 */
