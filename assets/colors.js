@@ -115,10 +115,11 @@ KI.textFor = function (version, color) {
 };
 
 /* 取り入れ方の文章を組み立てる。
- * 前半（服と小物）だけが可変で、色の意味と締めは表かVerの文言をそのまま使う。 */
+ * 「色の意味 → 取り入れ方 → 締め」の順。まず何の色かを分かってもらってから、
+ * どう使うかの話に進む。締めはいちばん最後に置いて背中を押す。 */
 KI.composeHowto = function (suggestion, color, version) {
   var t = KI.textFor(version, color);
-  return suggestion + color.name + 'は' + t.meaning + t.closing;
+  return color.name + 'は' + t.meaning + suggestion + t.closing;
 };
 
 KI.findColorByName = function (name) {

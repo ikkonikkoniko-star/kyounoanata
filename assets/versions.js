@@ -36,14 +36,10 @@ KI.VERSIONS = {
     },
     howtoLabel: 'こんなふうに色を取り入れる',
     howtoIcon: '🎨',
-    suggestion: function (color) {
-      /* 金銀は服に使う色ではないので、アクセサリーと小物の話にする */
-      if (color.sheen) {
-        return 'アクセサリーに' + color.name + 'を取り入れてみたり、小物に' +
-          color.name + 'を足してみましょう。';
-      }
-      return '着る服に' + color.name + 'を取り入れてみたり、ハンカチなどの小物に' +
-        color.name + 'を足してみましょう。';
+    /* どの色でも同じ文。色ごとに「服」「アクセサリー」と言い分けず、
+     * 身につけ方そのものを自由にしてもらう。 */
+    suggestion: function () {
+      return '取り入れ方は自由！下着や小物、服、文房具、自分の取り入れやすいもので取り入れてね。';
     }
   },
 
