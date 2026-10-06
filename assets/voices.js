@@ -34,9 +34,11 @@ KI.ROMA = {
   'くろ': 'kuro'
 };
 
-/* 届いた録音をここに足す。いまは1本も無いので、どのページにも再生ボタンは出ない。 */
+/* 届いた録音をここに足す。ここに無い色は再生ボタンを出さない。 */
 KI.VOICES = {
-  /* 'personal-aka': 'personal-aka.m4a', */
+  'personal-aka': 'personal-aka.m4a',
+  'personal-orange': 'personal-orange.m4a',
+  'personal-kiiro': 'personal-kiiro.m4a'
 };
 
 /* その色の声があればファイルの場所を、無ければ null を返す。 */
