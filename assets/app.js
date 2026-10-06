@@ -135,6 +135,16 @@ function buildVoice(src, label) {
   return wrap;
 }
 
+/* ときどき出る「おまけの声」の枠。
+ * 色の説明とは切り離してあるので、どの色でも同じものが出る。 */
+function buildOmake(cheer) {
+  var box = el('div', 'ki-omake');
+  box.appendChild(el('p', 'ki-omake-head', '🎁 今日はおまけつき'));
+  box.appendChild(buildVoice(KI.VOICE_DIR + cheer.file, cheer.text || 'おまけの声'));
+  box.appendChild(el('p', 'ki-omake-by', KI.CHEER_BY));
+  return box;
+}
+
 function buildNav(current) {
   var nav = el('nav', 'ki-nav');
   [
@@ -233,6 +243,10 @@ KI.init = function (versionId) {
     var voice = KI.voiceFor(versionId, color);
     if (voice) howto.appendChild(buildVoice(voice, KI.textFor(version, color).closing));
     result.appendChild(howto);
+
+    /* ときどきだけ、おまけの声を出す */
+    var cheer = KI.pickCheer(color);
+    if (cheer) result.appendChild(buildOmake(cheer));
 
     var again = el('button', 'ki-again', 'もう一度きく');
     again.type = 'button';

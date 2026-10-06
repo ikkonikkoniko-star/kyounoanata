@@ -210,6 +210,22 @@ body {
   .voice.is-playing .voice-wave i.is-on { animation: none; }
 }
 
+/* ---------- おまけの声 ----------
+ * 結果のあとに、ときどきだけ出る枠。本編とは別のものだと分かるように、
+ * 黄色みのある地にして少し浮かせる。 */
+.ki-omake {
+  margin-top: 16px; padding: 15px 18px 14px;
+  background: #FFF6E2; border: 2px solid var(--ki-line); border-radius: 16px;
+}
+.ki-omake-head { margin: 0 0 12px; font-size: 14px; font-weight: 800; }
+.ki-omake .ki-say { margin-top: 0; }
+.ki-omake .ki-say-bubble { background: #fff; }
+.ki-omake .ki-say-bubble::after { border-right-color: #fff; }
+.ki-omake-by {
+  margin: 11px 0 0; text-align: right;
+  font-size: 12.5px; font-weight: 700; color: var(--ki-muted);
+}
+
 /* ---------- トップページの写真 ----------
  * 写真の左側が壁で空いているので、そこに名前とリード文を重ねる。
  * ただし狭い画面では重ねる余白が足りないので、写真の下に置く。 */
