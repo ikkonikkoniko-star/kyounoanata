@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>きょうのKOKOいろ（声の確認用）</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%8E%A8%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/kakunin.css">
+</head>
+<body>
+<div class="pv-bar">
+  <b>声の確認用のページです。</b>
+  「やる気を出したい」「チームワークを大事にしたい」「楽しみたい」のどれかを押すと、
+  取り入れ方の下に再生バーが出ます。▶で鳴ります。ほかの色では出ません。
+</div>
+<div id="app"></div>
+<script src="assets/colors.js"></script>
+<script src="assets/character.js"></script>
+<script src="assets/versions.js"></script>
+<script src="assets/voices.js"></script>
+<script src="assets/cheers.js"></script>
+<script src="assets/app.js"></script>
+<script>
+/* このページだけの割り当て。ふだんのページ（personal.html など）には出ない。 */
+KI.VOICES = {
+  'personal-aka': 'personal-aka.m4a',
+  'personal-orange': 'personal-orange.m4a',
+  'personal-kiiro': 'personal-kiiro.m4a'
+};
+KI.init('personal');
+</script>
+</body>
+</html>
