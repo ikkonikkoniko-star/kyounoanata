@@ -380,7 +380,7 @@ KI.init = function (versionId) {
       }, KI.CHEER_DELAY);
     }
 
-    var again = el('button', 'ki-again', 'もう一度えらぶ');
+    var again = el('button', 'ki-again', version.againLabel || 'もう一度えらぶ');
     again.type = 'button';
     again.addEventListener('click', reset);
     result.appendChild(again);
