@@ -340,16 +340,15 @@ body {
 }
 
 /* ---------- トップページの写真 ----------
- * 広い画面は、名前の入っていない写真に、名前とリード文を重ねる。
- * 狭い画面は、名前が焼きこまれた写真をそのまま出し、文は写真の下に置く。
- * 写真の出し分けは index.html の <picture> 側。 */
+ * 写真は名前の入っていない1枚だけ。
+ *   狭い画面 … 写真の下に、名前・リード文・「まずは〜」を順に置く
+ *   広い画面 … 同じ文字を、写真の左のあいたところに重ねる */
 .ki-hero {
   position: relative; overflow: hidden; background: #EDEAE4; margin-bottom: 26px;
   border: 3px solid var(--ki-line); border-radius: var(--ki-round);
   box-shadow: 6px 6px 0 rgba(43,43,43,.12);
 }
-/* どちらの写真も、切り抜かずに全部見せる。
- * 切ると、狭い画面で写真の中の「きょうの」が外に出てしまう。 */
+/* 写真は切り抜かずに全部見せる */
 .ki-hero-img {
   display: block; width: 100%; max-width: 100%;
   aspect-ratio: 16 / 9; object-fit: cover; object-position: center;
@@ -363,18 +362,12 @@ body {
   overflow: hidden; clip-path: inset(50%); white-space: nowrap;
 }
 
-/* 狭い画面では、写真の中に名前があるので文字は出さない。
- * ただし見出しが無いとページの題が伝わらないので、
- * 読み上げと検索のためだけに残しておく。 */
-.ki-hero .ki-logo {
-  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
-  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
-}
-.ki-hero-copy { margin-top: 0; }
-/* 名前を出さないぶん、説明の字を大きくして読みやすくする */
+/* 狭い画面では、名前は写真のすぐ下。ここがページの題になる。 */
+.ki-hero .ki-logo { text-align: center; }
+.ki-hero-copy { margin-top: 14px; }
 .ki-hero .ki-lead {
   margin: 0 auto; max-width: 24em;
-  font-size: clamp(16.5px, 4.6vw, 19px); line-height: 1.85;
+  font-size: clamp(16px, 4.3vw, 18px); line-height: 1.8;
 }
 .ki-hero .ki-pick { margin: 12px 0 0; font-size: clamp(15px, 4.1vw, 17px); }
 
