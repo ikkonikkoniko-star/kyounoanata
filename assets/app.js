@@ -189,8 +189,9 @@ function dropConfetti(into) {
   }, 2600);
 }
 
-/* ときどき出る「おまけの声」。
- * まず箱だけが飛び出して、押すとふたが開き、中から顔が出て声が鳴る。 */
+/* ときどき出る「おまけ」。
+ * まず箱だけが飛び出して、押すとふたが開き、中から顔が出る。
+ * そのあと、声が鳴るか、言葉が大きく出るかは cheer の中身で決まる。 */
 function buildOmake(cheer) {
   var wrap = el('div', 'ki-omake');
   wrap.hidden = true;
@@ -203,7 +204,9 @@ function buildOmake(cheer) {
   var stage = el('div', 'ki-gift-stage');
   var btn = el('button', 'ki-gift');
   btn.type = 'button';
-  btn.setAttribute('aria-label', 'プレゼントをあけて、代表からのメッセージを聞く');
+  btn.setAttribute('aria-label', cheer.word
+    ? 'プレゼントをあけてみる'
+    : 'プレゼントをあけて、代表からのメッセージを聞く');
 
   var face = el('span', 'ki-gift-face');
   var img = document.createElement('img');
@@ -229,22 +232,33 @@ function buildOmake(cheer) {
 
   var opened = el('div', 'ki-omake-open');
   opened.hidden = true;
-  var voice = buildVoice(KI.VOICE_DIR + cheer.file, '代表からのメッセージ');
-  opened.appendChild(voice);
+  /* 声のあるVerは再生バー、無いVerは言葉を大きく。置き場所は同じ。 */
+  var voice = null;
+  if (cheer.word) {
+    opened.appendChild(el('p', 'ki-omake-word', cheer.word));
+  } else {
+    voice = buildVoice(KI.VOICE_DIR + cheer.file, '代表からのメッセージ');
+    opened.appendChild(voice);
+  }
   opened.appendChild(el('p', 'ki-omake-by', KI.CHEER_BY));
   wrap.appendChild(opened);
 
   btn.addEventListener('click', function () {
     if (wrap.className.indexOf('is-open') !== -1) return;
     wrap.className = 'ki-omake is-in is-open';
-    hint.textContent = '代表からのメッセージ';
     opened.hidden = false;
     btn.disabled = true;
     dropConfetti(wrap);
-    /* 押した操作の中でそのまま鳴らす。あとから鳴らそうとすると、
-     * スマホでは止められてしまうため。 */
-    var play = voice.querySelector('.voice');
-    if (play) play.click();
+    if (voice) {
+      hint.textContent = '代表からのメッセージ';
+      /* 押した操作の中でそのまま鳴らす。あとから鳴らそうとすると、
+       * スマホでは止められてしまうため。 */
+      var play = voice.querySelector('.voice');
+      if (play) play.click();
+    } else {
+      /* 言葉そのものが合図になるので、案内の行は消す */
+      hint.hidden = true;
+    }
   });
 
   return wrap;
@@ -353,9 +367,9 @@ KI.init = function (versionId) {
     if (voice) howto.appendChild(buildVoice(voice, KI.textFor(version, color).closing));
     result.appendChild(howto);
 
-    /* ときどきだけ、おまけの声を出す。
+    /* ときどきだけ、おまけを出す。
      * 文章を読み終わったころに、箱が飛び出してくる。 */
-    var cheer = KI.pickCheer(color);
+    var cheer = KI.pickCheer(color, versionId);
     if (cheer) {
       var omake = buildOmake(cheer);
       result.appendChild(omake);

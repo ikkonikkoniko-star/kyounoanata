@@ -27,6 +27,12 @@ KI.WARM = ['あか', 'オレンジ', 'きいろ', 'ピンク', 'あかむらさ�
 /* 画面に出す署名 */
 KI.CHEER_BY = 'KOKOIRO代表　播本なおこ より';
 
+/* 声を出さないVer。箱もイラストもそのままで、声の場所に言葉を大きく出す。 */
+KI.CHEER_NO_VOICE = ['kids'];
+/* 最後のピースだけ絵文字。U+FE0F を付けて、白黒の記号ではなく
+ * 色つきの絵文字として出るようにしている。 */
+KI.CHEER_WORDS = ['あたり！', '大当たり！', 'やったね！', 'いいね！', '✌️'];
+
 KI.CHEERS = [
   { file: 'cheer1.m4a' },
   { file: 'cheer2.m4a' },
@@ -39,11 +45,32 @@ KI.CHEERS = [
 
 /* 直前に出たものを覚えておいて、続けて同じものが出ないようにする */
 var lastCheer = null;
+var lastWord = null;
 
-/* 出すものを1つ選ぶ。出さないときは null を返す。 */
-KI.pickCheer = function (color) {
-  if (!KI.CHEERS.length) return null;
+/* 言葉を1つ選ぶ。直前と同じものは避ける。 */
+function pickWord() {
+  var ok = KI.CHEER_WORDS;
+  if (!ok.length) return null;
+  if (ok.length > 1) {
+    var fresh = ok.filter(function (w) { return w !== lastWord; });
+    if (fresh.length) ok = fresh;
+  }
+  var w = ok[Math.floor(Math.random() * ok.length)];
+  lastWord = w;
+  return w;
+}
+
+/* 出すものを1つ選ぶ。出さないときは null を返す。
+ * 声を出さないVerでは { word: '...' } を、ほかでは { file: '...' } を返す。 */
+KI.pickCheer = function (color, versionId) {
   if (Math.random() >= KI.CHEER_RATE) return null;
+
+  if (KI.CHEER_NO_VOICE.indexOf(versionId) !== -1) {
+    var w = pickWord();
+    return w ? { word: w } : null;
+  }
+
+  if (!KI.CHEERS.length) return null;
 
   var ok = KI.CHEERS.filter(function (c) {
     return !(c.skip && c.skip.indexOf(color.name) !== -1);
