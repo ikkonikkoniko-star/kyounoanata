@@ -211,42 +211,116 @@ body {
 }
 
 /* ---------- おまけの声 ----------
- * 3回に1回くらいだけ出る枠。本編とは別の「もらいもの」に見えるように、
- * 地を明るくして、ふわっと出す。 */
+ * 3回に1回くらい、文章を読み終わったころに箱が飛び出す。
+ * 押すとふたが開いて、中から顔が出て声が鳴る。 */
 .ki-omake {
-  position: relative; overflow: hidden;
-  margin-top: 18px; padding: 16px 18px 14px;
+  margin-top: 18px; padding: 16px 18px 15px; text-align: center;
   background: linear-gradient(135deg, #FFF6DF 0%, #FFE6A6 100%);
   border: 3px solid var(--ki-line); border-radius: 18px;
   box-shadow: 4px 4px 0 rgba(43,43,43,.16);
-  animation: ki-omake-in .5s cubic-bezier(.18, 1.3, .5, 1) both;
 }
+.ki-omake.is-in { animation: ki-omake-in .55s cubic-bezier(.18, 1.5, .5, 1) both; }
 @keyframes ki-omake-in {
-  from { opacity: 0; transform: scale(.92) translateY(10px); }
+  from { opacity: 0; transform: scale(.88) translateY(14px); }
   to   { opacity: 1; transform: none; }
 }
 .ki-omake-head {
-  display: flex; align-items: center; gap: 7px;
-  margin: 0 0 3px; font-size: 16px; font-weight: 900; letter-spacing: .01em;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  margin: 0 0 12px; font-size: 16px; font-weight: 900;
 }
 .ki-omake-spark { font-size: 18px; line-height: 1; animation: ki-spark 1.6s ease-in-out infinite; }
 @keyframes ki-spark {
   0%, 100% { transform: scale(1) rotate(0deg); }
   50%      { transform: scale(1.22) rotate(12deg); }
 }
-.ki-omake-sub { margin: 0 0 12px; font-size: 13px; font-weight: 700; color: #7A6A3A; }
+
+/* ---- 箱 ---- */
+.ki-gift-stage { display: flex; justify-content: center; }
+.ki-gift {
+  position: relative; width: 136px; height: 172px;
+  padding: 0; border: none; background: none; cursor: pointer;
+  font: inherit; color: inherit;
+}
+.ki-gift:disabled { cursor: default; }
+.ki-gift:focus-visible { outline: 3px solid #0068B7; outline-offset: 4px; border-radius: 14px; }
+
+/* 箱は下に寄せて置き、上に顔が出る場所をあけておく */
+.ki-gift-art {
+  position: absolute; left: 50%; bottom: 0; z-index: 2;
+  transform: translateX(-50%);
+  width: 124px; display: block;
+}
+.ki-gift-svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+/* ふただけを飛ばす */
+.ki-gift-lid {
+  transform-box: fill-box; transform-origin: 50% 100%;
+  transition: transform .55s cubic-bezier(.2, 1.35, .4, 1);
+}
+.is-open .ki-gift-lid { transform: translate(56px, -6px) rotate(-22deg); }
+
+/* 開くまでは箱が小さく跳ねて、押せることを伝える */
+.ki-omake:not(.is-open) .ki-gift-art { animation: ki-gift-hop 1.5s ease-in-out infinite; }
+@keyframes ki-gift-hop {
+  0%, 100% { transform: translateX(-50%) translateY(0) rotate(0deg); }
+  30%      { transform: translateX(-50%) translateY(-7px) rotate(-3deg); }
+  60%      { transform: translateX(-50%) translateY(0) rotate(3deg); }
+}
+.ki-gift:hover:not(:disabled) .ki-gift-art { animation-play-state: paused; transform: translateX(-50%) scale(1.05); }
+
+/* 顔は箱の中から上に出てくる。箱の後ろ側に置いてある */
+.ki-gift-face {
+  display: block;
+  position: absolute; left: 50%; bottom: 30px; z-index: 1;
+  width: 72px; height: 72px; border-radius: 50%;
+  border: 3px solid var(--ki-line); overflow: hidden; background: #fff;
+  transform: translate(-50%, 10px) scale(.4); opacity: 0;
+  transition: transform .6s cubic-bezier(.2, 1.6, .4, 1), opacity .3s ease;
+}
+.ki-gift-face img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.is-open .ki-gift-face { transform: translate(-50%, -70px) scale(1); opacity: 1; }
+
+/* 開いたときに散る光 */
+.ki-gift-star {
+  position: absolute; z-index: 3; font-size: 17px; color: #E8A317;
+  opacity: 0; pointer-events: none;
+}
+.ki-gift-star.s1 { left: 6px;  top: 44px; }
+.ki-gift-star.s2 { right: 2px; top: 30px; font-size: 21px; }
+.ki-gift-star.s3 { right: 22px; top: 76px; font-size: 14px; }
+.is-open .ki-gift-star { animation: ki-gift-star .9s ease-out both; }
+.is-open .ki-gift-star.s2 { animation-delay: .08s; }
+.is-open .ki-gift-star.s3 { animation-delay: .16s; }
+@keyframes ki-gift-star {
+  0%   { opacity: 0; transform: scale(.3); }
+  40%  { opacity: 1; transform: scale(1.25); }
+  100% { opacity: 0; transform: scale(1) translateY(-14px); }
+}
+
+.ki-gift-hint {
+  margin: 10px 0 0; font-size: 13.5px; font-weight: 800; color: #7A6A3A;
+}
+
+/* ---- 開いたあと ---- */
+.ki-omake-open { margin-top: 12px; }
 .ki-omake .ki-say { margin-top: 0; }
+.ki-omake .ki-say-face { display: none; }
 .ki-omake .ki-say-bubble { background: #fff; }
-.ki-omake .ki-say-bubble::after { border-right-color: #fff; }
+.ki-omake .ki-say-bubble::before,
+.ki-omake .ki-say-bubble::after { display: none; }
 .ki-omake .voice-wave i { background: #D8C58A; }
 .ki-omake .voice-wave i.is-on { background: var(--ki-line); }
 .ki-omake-by {
-  margin: 11px 0 0; text-align: right;
+  margin: 10px 0 0; text-align: right;
   font-size: 12.5px; font-weight: 700; color: #7A6A3A;
 }
+
 @media (prefers-reduced-motion: reduce) {
-  .ki-omake { animation: none; }
+  .ki-omake.is-in { animation: none; }
   .ki-omake-spark { animation: none; }
+  .ki-omake:not(.is-open) .ki-gift-art { animation: none; }
+  .ki-gift-lid, .ki-gift-face { transition: none; }
+  .is-open .ki-gift-star { animation: none; opacity: 0; }
 }
 
 /* ---------- トップページの写真 ----------

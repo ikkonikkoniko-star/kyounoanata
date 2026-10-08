@@ -139,16 +139,88 @@ function buildVoice(src, label) {
 
 /* ときどき出る「おまけの声」の枠。
  * 色の説明とは切り離してあるので、どの色でも同じものが出る。 */
+/* プレゼントの箱。ふたと本体を分けてあり、
+ * 開けるときに CSS でふただけを飛ばす。 */
+var GIFT_SVG = [
+  '<svg class="ki-gift-svg" viewBox="0 0 120 112" aria-hidden="true">',
+  '<g class="ki-gift-base">',
+  '<rect x="16" y="48" width="88" height="56" rx="7" fill="#F2B231"',
+  ' stroke="#2b2b2b" stroke-width="3"/>',
+  '<rect x="52" y="48" width="16" height="56" fill="#E60033"',
+  ' stroke="#2b2b2b" stroke-width="3"/>',
+  '</g>',
+  '<g class="ki-gift-lid">',
+  '<ellipse cx="45" cy="21" rx="14" ry="11" fill="#E60033"',
+  ' stroke="#2b2b2b" stroke-width="3"/>',
+  '<ellipse cx="75" cy="21" rx="14" ry="11" fill="#E60033"',
+  ' stroke="#2b2b2b" stroke-width="3"/>',
+  '<rect x="8" y="30" width="104" height="22" rx="6" fill="#F2B231"',
+  ' stroke="#2b2b2b" stroke-width="3"/>',
+  '<rect x="52" y="30" width="16" height="22" fill="#E60033"',
+  ' stroke="#2b2b2b" stroke-width="3"/>',
+  '<circle cx="60" cy="24" r="6" fill="#E60033" stroke="#2b2b2b" stroke-width="3"/>',
+  '</g>',
+  '</svg>'
+].join('');
+
+/* ときどき出る「おまけの声」。
+ * まず箱だけが飛び出して、押すとふたが開き、中から顔が出て声が鳴る。 */
 function buildOmake(cheer) {
-  var box = el('div', 'ki-omake');
-  var ribbon = el('p', 'ki-omake-head');
-  ribbon.appendChild(el('span', 'ki-omake-spark', '✨'));
-  ribbon.appendChild(document.createTextNode('今日はラッキーな日！'));
-  box.appendChild(ribbon);
-  box.appendChild(el('p', 'ki-omake-sub', '代表からのメッセージが届きました'));
-  box.appendChild(buildVoice(KI.VOICE_DIR + cheer.file, cheer.text || '代表からのメッセージ'));
-  box.appendChild(el('p', 'ki-omake-by', KI.CHEER_BY));
-  return box;
+  var wrap = el('div', 'ki-omake');
+  wrap.hidden = true;
+
+  var head = el('p', 'ki-omake-head');
+  head.appendChild(el('span', 'ki-omake-spark', '✨'));
+  head.appendChild(document.createTextNode('今日はラッキーな日！'));
+  wrap.appendChild(head);
+
+  var stage = el('div', 'ki-gift-stage');
+  var btn = el('button', 'ki-gift');
+  btn.type = 'button';
+  btn.setAttribute('aria-label', 'プレゼントをあけて、代表からのメッセージを聞く');
+
+  var face = el('span', 'ki-gift-face');
+  var img = document.createElement('img');
+  img.src = 'assets/face.png';
+  img.alt = '';
+  face.appendChild(img);
+  btn.appendChild(face);
+
+  var art = el('span', 'ki-gift-art');
+  art.innerHTML = GIFT_SVG;
+  btn.appendChild(art);
+
+  /* 開けたときに散る光。見た目だけのもの。 */
+  ['✦', '✧', '✦'].forEach(function (mark, i) {
+    btn.appendChild(el('span', 'ki-gift-star s' + (i + 1), mark));
+  });
+
+  stage.appendChild(btn);
+  wrap.appendChild(stage);
+
+  var hint = el('p', 'ki-gift-hint', 'タップしてあけてみて');
+  wrap.appendChild(hint);
+
+  var opened = el('div', 'ki-omake-open');
+  opened.hidden = true;
+  var voice = buildVoice(KI.VOICE_DIR + cheer.file, '代表からのメッセージ');
+  opened.appendChild(voice);
+  opened.appendChild(el('p', 'ki-omake-by', KI.CHEER_BY));
+  wrap.appendChild(opened);
+
+  btn.addEventListener('click', function () {
+    if (wrap.className.indexOf('is-open') !== -1) return;
+    wrap.className = 'ki-omake is-in is-open';
+    hint.textContent = '代表からのメッセージ';
+    opened.hidden = false;
+    btn.disabled = true;
+    /* 押した操作の中でそのまま鳴らす。あとから鳴らそうとすると、
+     * スマホでは止められてしまうため。 */
+    var play = voice.querySelector('.voice');
+    if (play) play.click();
+  });
+
+  return wrap;
 }
 
 function buildNav(current) {
@@ -216,7 +288,11 @@ KI.init = function (versionId) {
 
   /* --- 動作 --- */
 
+  /* 箱が飛び出すのを待っているあいだの合図。戻るときに取り消す。 */
+  var omakeTimer = null;
+
   function show(feeling, color) {
+    clearTimeout(omakeTimer);
     var data = KI.resultFor(version, color);
     figure.innerHTML = KI.renderCharacter(color, versionId);
     chipWrap.hidden = true;
@@ -250,9 +326,18 @@ KI.init = function (versionId) {
     if (voice) howto.appendChild(buildVoice(voice, KI.textFor(version, color).closing));
     result.appendChild(howto);
 
-    /* ときどきだけ、おまけの声を出す */
+    /* ときどきだけ、おまけの声を出す。
+     * 文章を読み終わったころに、箱が飛び出してくる。 */
     var cheer = KI.pickCheer(color);
-    if (cheer) result.appendChild(buildOmake(cheer));
+    if (cheer) {
+      var omake = buildOmake(cheer);
+      result.appendChild(omake);
+      omakeTimer = setTimeout(function () {
+        omake.hidden = false;
+        /* 次の描画で動きだすようにする */
+        setTimeout(function () { omake.className = 'ki-omake is-in'; }, 20);
+      }, KI.CHEER_DELAY);
+    }
 
     var again = el('button', 'ki-again', 'もう一度きく');
     again.type = 'button';
@@ -269,6 +354,7 @@ KI.init = function (versionId) {
   }
 
   function reset() {
+    clearTimeout(omakeTimer);
     result.hidden = true;
     result.innerHTML = '';
     chipWrap.hidden = false;
