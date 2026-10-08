@@ -351,10 +351,12 @@ body {
   position: relative; overflow: hidden; margin-bottom: 26px;
   width: 100vw; margin-inline: calc(50% - 50vw);
 }
-/* 狭い画面では切り抜かずに全部見せる。「心」と「色」の両方を残したいため。 */
+/* 狭い画面では縦長に切って、人が真ん中に来るようにする。
+ * 人は写真の右寄りにいるので、右端をそろえると真ん中に見える。
+ * この切り方なら「心」も「色」も欠けない。 */
 .ki-hero-img {
   display: block; width: 100%; max-width: 100%; background: #EDEAE4;
-  aspect-ratio: 16 / 9; object-fit: cover; object-position: center;
+  aspect-ratio: 4 / 3; object-fit: cover; object-position: right center;
 }
 /* 帯なので、文字の下じきは敷かずに紙の色のまま続ける */
 .ki-hero-text {
@@ -381,7 +383,7 @@ body {
 @media (min-width: 761px) {
   /* 画面が広いと 16:9 では縦に伸びすぎるので、高さを止めて切り抜く。
    * 顔が真ん中より上に来るよう、見せる位置を上げている。 */
-  .ki-hero-img { max-height: 620px; object-position: 50% 28%; }
+  .ki-hero-img { aspect-ratio: 16 / 9; max-height: 620px; object-position: 50% 28%; }
   .ki-hero-text {
     position: absolute; inset: 0;
     display: flex; flex-direction: column; align-items: flex-start;
