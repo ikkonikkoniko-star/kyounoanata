@@ -31,7 +31,7 @@ KI.CHEER_BY = 'KOKOIRO代表　播本なおこ より';
 KI.CHEER_NO_VOICE = ['kids'];
 /* 最後のピースだけ絵文字。U+FE0F を付けて、白黒の記号ではなく
  * 色つきの絵文字として出るようにしている。 */
-KI.CHEER_WORDS = ['あたり！', '大当たり！', 'やったね！', 'いいね！', '✌️'];
+KI.CHEER_WORDS = ['あたり！', '大あたり！', 'やったね！', 'いいね！', '✌️'];
 
 KI.CHEERS = [
   { file: 'cheer1.m4a' },
