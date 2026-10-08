@@ -1,7 +1,8 @@
 /* ---------- 字体 ----------
  * 丸くてPOPな「Rounded M+ 1c」をサイトの中に置いて使う。
- * 端末まかせだと、iPhoneは丸ゴ、Androidは角ゴと形が変わってしまうため。
+ * 使うのは「あたり」のおまけの中だけ。ほかは今までどおり端末の字。
  * ファイルはこのサイトの中にあるので、外のどこにも取りに行かない。
+ * おまけが出たときに初めて読み込まれるので、ふだんは何も増えない。
  * ライセンスと作り直し方は assets/font/README.txt を見ること。
  * swap にしてあるので、読み込みが終わるまでは端末の字で表示され、
  * 終わったら差し替わる。文字が消える時間は作らない。 */
@@ -33,6 +34,9 @@
   --ki-accent: #F2B231;
   --ki-koko: #FFD84A;   /* ロゴの「KOKO」の黄色 */
   --ki-round: 20px;
+  /* ふだんの字。端末に入っているものを使う。 */
+  --ki-font: "Hiragino Maru Gothic ProN", "Hiragino Kaku Gothic ProN",
+             "Yu Gothic Medium", "Meiryo", system-ui, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -48,9 +52,7 @@ body {
     radial-gradient(circle at 88% 22%, rgba(127,204,227,.20), transparent 40%),
     var(--ki-paper);
   color: var(--ki-ink);
-  /* 読み込みが終わるまでと、字体に無い文字のときは、うしろの端末の字を使う */
-  font-family: "KokoRounded", "Hiragino Maru Gothic ProN", "Hiragino Kaku Gothic ProN",
-               "Yu Gothic Medium", "Meiryo", system-ui, sans-serif;
+  font-family: var(--ki-font);
   line-height: 1.75;
   -webkit-text-size-adjust: 100%;
 }
@@ -242,6 +244,8 @@ body {
  * 3回に1回くらい、文章を読み終わったころに箱が飛び出す。
  * 押すとふたが開いて、中から顔が出て声が鳴る。 */
 .ki-omake {
+  /* ここだけPOPな字体。字体に無い文字（絵文字など）はうしろの字で出る。 */
+  font-family: "KokoRounded", var(--ki-font);
   position: relative; overflow: hidden;
   margin-top: 18px; padding: 16px 18px 15px; text-align: center;
   background: linear-gradient(135deg, #FFF6DF 0%, #FFE6A6 100%);
