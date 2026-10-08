@@ -56,6 +56,8 @@ var VOICE_STOP = '<svg viewBox="0 0 12 14" aria-hidden="true">' +
   '<rect x="1.5" y="1.5" width="3.4" height="11" fill="#2b2b2b"/>' +
   '<rect x="7.1" y="1.5" width="3.4" height="11" fill="#2b2b2b"/></svg>';
 
+KI.buildVoiceBar = function (src, label) { return buildVoice(src, label); };
+
 function buildVoice(src, label) {
   var wrap = el('div', 'ki-say');
 
@@ -139,8 +141,12 @@ function buildVoice(src, label) {
  * 色の説明とは切り離してあるので、どの色でも同じものが出る。 */
 function buildOmake(cheer) {
   var box = el('div', 'ki-omake');
-  box.appendChild(el('p', 'ki-omake-head', '🎁 今日はおまけつき'));
-  box.appendChild(buildVoice(KI.VOICE_DIR + cheer.file, cheer.text || 'おまけの声'));
+  var ribbon = el('p', 'ki-omake-head');
+  ribbon.appendChild(el('span', 'ki-omake-spark', '✨'));
+  ribbon.appendChild(document.createTextNode('今日はラッキーな日！'));
+  box.appendChild(ribbon);
+  box.appendChild(el('p', 'ki-omake-sub', '代表からのメッセージが届きました'));
+  box.appendChild(buildVoice(KI.VOICE_DIR + cheer.file, cheer.text || '代表からのメッセージ'));
   box.appendChild(el('p', 'ki-omake-by', KI.CHEER_BY));
   return box;
 }

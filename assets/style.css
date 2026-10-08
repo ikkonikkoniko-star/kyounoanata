@@ -211,19 +211,42 @@ body {
 }
 
 /* ---------- おまけの声 ----------
- * 結果のあとに、ときどきだけ出る枠。本編とは別のものだと分かるように、
- * 黄色みのある地にして少し浮かせる。 */
+ * 3回に1回くらいだけ出る枠。本編とは別の「もらいもの」に見えるように、
+ * 地を明るくして、ふわっと出す。 */
 .ki-omake {
-  margin-top: 16px; padding: 15px 18px 14px;
-  background: #FFF6E2; border: 2px solid var(--ki-line); border-radius: 16px;
+  position: relative; overflow: hidden;
+  margin-top: 18px; padding: 16px 18px 14px;
+  background: linear-gradient(135deg, #FFF6DF 0%, #FFE6A6 100%);
+  border: 3px solid var(--ki-line); border-radius: 18px;
+  box-shadow: 4px 4px 0 rgba(43,43,43,.16);
+  animation: ki-omake-in .5s cubic-bezier(.18, 1.3, .5, 1) both;
 }
-.ki-omake-head { margin: 0 0 12px; font-size: 14px; font-weight: 800; }
+@keyframes ki-omake-in {
+  from { opacity: 0; transform: scale(.92) translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+.ki-omake-head {
+  display: flex; align-items: center; gap: 7px;
+  margin: 0 0 3px; font-size: 16px; font-weight: 900; letter-spacing: .01em;
+}
+.ki-omake-spark { font-size: 18px; line-height: 1; animation: ki-spark 1.6s ease-in-out infinite; }
+@keyframes ki-spark {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50%      { transform: scale(1.22) rotate(12deg); }
+}
+.ki-omake-sub { margin: 0 0 12px; font-size: 13px; font-weight: 700; color: #7A6A3A; }
 .ki-omake .ki-say { margin-top: 0; }
 .ki-omake .ki-say-bubble { background: #fff; }
 .ki-omake .ki-say-bubble::after { border-right-color: #fff; }
+.ki-omake .voice-wave i { background: #D8C58A; }
+.ki-omake .voice-wave i.is-on { background: var(--ki-line); }
 .ki-omake-by {
   margin: 11px 0 0; text-align: right;
-  font-size: 12.5px; font-weight: 700; color: var(--ki-muted);
+  font-size: 12.5px; font-weight: 700; color: #7A6A3A;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ki-omake { animation: none; }
+  .ki-omake-spark { animation: none; }
 }
 
 /* ---------- トップページの写真 ----------
