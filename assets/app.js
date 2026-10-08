@@ -163,6 +163,32 @@ var GIFT_SVG = [
   '</svg>'
 ].join('');
 
+/* 紙吹雪。開けたときだけ、枠の中に降らせる。
+ * 見た目だけのものなので、動きを減らす設定のときは出さない。 */
+var CONFETTI_COLORS = ['#E60033', '#F2B231', '#FFD900', '#00A960',
+                       '#0068B7', '#EE87B4', '#884898'];
+
+function dropConfetti(into) {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var sheet = el('div', 'ki-confetti');
+  sheet.setAttribute('aria-hidden', 'true');
+  for (var i = 0; i < 26; i++) {
+    var bit = el('i');
+    bit.style.left = Math.round(Math.random() * 96) + '%';
+    bit.style.background = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+    bit.style.animationDelay = (Math.random() * 0.5).toFixed(2) + 's';
+    bit.style.animationDuration = (1.3 + Math.random() * 0.9).toFixed(2) + 's';
+    /* 幅と傾きをばらして、紙がひらひらしているように見せる */
+    bit.style.width = (5 + Math.round(Math.random() * 4)) + 'px';
+    bit.style.height = (9 + Math.round(Math.random() * 6)) + 'px';
+    sheet.appendChild(bit);
+  }
+  into.appendChild(sheet);
+  setTimeout(function () {
+    if (sheet.parentNode) sheet.parentNode.removeChild(sheet);
+  }, 2600);
+}
+
 /* ときどき出る「おまけの声」。
  * まず箱だけが飛び出して、押すとふたが開き、中から顔が出て声が鳴る。 */
 function buildOmake(cheer) {
@@ -214,6 +240,7 @@ function buildOmake(cheer) {
     hint.textContent = '代表からのメッセージ';
     opened.hidden = false;
     btn.disabled = true;
+    dropConfetti(wrap);
     /* 押した操作の中でそのまま鳴らす。あとから鳴らそうとすると、
      * スマホでは止められてしまうため。 */
     var play = voice.querySelector('.voice');
@@ -339,7 +366,7 @@ KI.init = function (versionId) {
       }, KI.CHEER_DELAY);
     }
 
-    var again = el('button', 'ki-again', 'もう一度きく');
+    var again = el('button', 'ki-again', 'もう一度えらぶ');
     again.type = 'button';
     again.addEventListener('click', reset);
     result.appendChild(again);
