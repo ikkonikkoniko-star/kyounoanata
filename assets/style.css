@@ -357,6 +357,12 @@ body {
 .ki-hero-text {
   padding: 16px 16px 20px; text-align: center; background: var(--ki-card);
 }
+/* 古いページが残っていても見出しが露出しないように、この名前でも隠しておく */
+.ki-only-read {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+
 /* 狭い画面では、写真の中に名前があるので文字は出さない。
  * ただし見出しが無いとページの題が伝わらないので、
  * 読み上げと検索のためだけに残しておく。 */
