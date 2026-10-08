@@ -347,52 +347,30 @@ body {
   border: 3px solid var(--ki-line); border-radius: var(--ki-round);
   box-shadow: 6px 6px 0 rgba(43,43,43,.12);
 }
+/* 写真の中に名前が入っているので、切り抜かずに全部見せる。
+ * 切ると「きょうの」が画面の外に出てしまう。 */
 .ki-hero-img {
   display: block; width: 100%; max-width: 100%;
-  aspect-ratio: 4 / 3; object-fit: cover; object-position: right center;
+  aspect-ratio: 16 / 9; object-fit: cover; object-position: center;
 }
 .ki-hero-text {
   padding: 18px 16px 20px; text-align: center; background: var(--ki-card);
 }
-/* 狭い画面では、名前だけを写真の上（頭の上のあき）にのせる。
- * 残りの文は写真の下。携帯は横幅がないので、文章まで重ねると写真が沈む。 */
-.ki-hero .ki-logo {
-  position: absolute; top: 2.5%; left: 0; right: 0; z-index: 2;
-  text-align: center; font-size: clamp(26px, 8.8vw, 44px);
+/* 読み上げと検索のためだけの見出し。画面には出さない。 */
+.ki-only-read {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
 }
-.ki-hero-text { padding-top: 16px; }
 .ki-hero-copy { margin-top: 0; }
 .ki-hero .ki-lead { margin: 0 auto; max-width: 26em; font-size: 15.5px; }
 .ki-hero .ki-pick { margin: 10px 0 0; }
 
-/* 横に余裕があるときだけ、写真の空いたところに文字を重ねる。
- * 名前は上の帯、リード文と「まずは〜」は左下のあき。
- * 人物にかからない範囲なので、下のほうの字は大きくできる。 */
+/* 写真の中に名前が入っているので、文字を重ねずに下にそろえて置く。
+ * 広い画面では、文だけ少し大きくする。 */
 @media (min-width: 761px) {
-  .ki-hero-img { aspect-ratio: 16 / 9; object-position: center; }
-  .ki-hero-text {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column; align-items: flex-start;
-    /* 上下の % は幅を基準に計算されるので、見た目より小さく効く。
-     * 下は 3% で、写真の下のふちのすぐ上に「まずは〜」が来る。 */
-    padding: 5% 0 3% clamp(20px, 3.6vw, 44px);
-    /* 壁がもともと白いので、うすくかけるだけで字は読める。
-     * 濃くすると「心」の文字が消えてしまう。 */
-    text-align: left; background: linear-gradient(96deg,
-      rgba(255,251,242,.86) 0%, rgba(255,251,242,.66) 34%, rgba(255,251,242,0) 54%);
-  }
-  .ki-hero .ki-logo {
-    position: static; text-align: left; font-size: clamp(28px, 5.6vw, 66px);
-  }
-  .ki-hero-copy { margin: auto 0 0; width: 48%; }
-  .ki-hero .ki-lead {
-    margin: 0; max-width: none; text-align: left;
-    font-size: clamp(17px, 2.1vw, 21px); line-height: 1.95;
-  }
-  .ki-hero .ki-pick {
-    margin: 14px 0 0; text-align: left;
-    font-size: clamp(15px, 1.9vw, 19px);
-  }
+  .ki-hero-text { padding: 22px 20px 24px; }
+  .ki-hero .ki-lead { font-size: clamp(16px, 1.9vw, 19px); line-height: 1.9; max-width: 38em; }
+  .ki-hero .ki-pick { margin: 12px 0 0; font-size: clamp(15px, 1.7vw, 17px); }
 }
 
 /* ---------- トップページ ---------- */
