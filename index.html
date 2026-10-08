@@ -25,21 +25,35 @@
   var hero = document.createElement('div');
   hero.className = 'ki-hero';
 
+  /* 写真は画面の幅で使い分ける。
+   *   狭い画面 … 名前が焼きこまれた写真。文字を重ねない
+   *   広い画面 … 名前なしの写真。左の壁に文字を重ねる
+   * どちらを出すかはブラウザが選ぶので、使わないほうは読み込まれない。 */
+  var pic = document.createElement('picture');
+  var sp = document.createElement('source');
+  sp.media = '(max-width: 760px)';
+  sp.srcset = 'assets/hero.jpg';
+  pic.appendChild(sp);
   var img = document.createElement('img');
   img.className = 'ki-hero-img';
-  img.src = 'assets/hero.jpg';
-  img.alt = 'きょうのKOKOIRO';
-  hero.appendChild(img);
+  img.src = 'assets/hero.webp';
+  img.alt = '';
+  pic.appendChild(img);
+  hero.appendChild(pic);
 
   var heroText = document.createElement('div');
   heroText.className = 'ki-hero-text';
 
-  /* 名前は写真の中に入っているので、画面には文字を出さない。
-   * ただし見出しが無いとページの題が伝わらないので、
-   * 読み上げと検索のためだけに、見えない見出しを置く。 */
   var h1 = document.createElement('h1');
-  h1.className = 'ki-only-read';
-  h1.textContent = 'きょうのKOKOいろ';
+  h1.className = 'ki-logo';
+  /* ロゴのうち「KOKO」だけ見た目を変える。色づけは style.css 側。
+   * 狭い画面では、写真に名前が入っているので CSS で隠す。 */
+  'きょうのKOKOいろ'.split('').forEach(function (ch, i) {
+    var s = document.createElement('span');
+    s.className = 'ki-logo-char' + (i >= 4 && i <= 7 ? ' is-koko' : '');
+    s.textContent = ch;
+    h1.appendChild(s);
+  });
   heroText.appendChild(h1);
 
   /* リード文と「まずは〜」は、写真の下のほうの空いたところにまとめて置く。

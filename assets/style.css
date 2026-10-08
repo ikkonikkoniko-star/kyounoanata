@@ -340,37 +340,67 @@ body {
 }
 
 /* ---------- トップページの写真 ----------
- * 写真の左側が壁で空いているので、そこに名前とリード文を重ねる。
- * ただし狭い画面では重ねる余白が足りないので、写真の下に置く。 */
+ * 広い画面は、名前の入っていない写真に、名前とリード文を重ねる。
+ * 狭い画面は、名前が焼きこまれた写真をそのまま出し、文は写真の下に置く。
+ * 写真の出し分けは index.html の <picture> 側。 */
 .ki-hero {
   position: relative; overflow: hidden; background: #EDEAE4; margin-bottom: 26px;
   border: 3px solid var(--ki-line); border-radius: var(--ki-round);
   box-shadow: 6px 6px 0 rgba(43,43,43,.12);
 }
-/* 写真の中に名前が入っているので、切り抜かずに全部見せる。
- * 切ると「きょうの」が画面の外に出てしまう。 */
+/* どちらの写真も、切り抜かずに全部見せる。
+ * 切ると、狭い画面で写真の中の「きょうの」が外に出てしまう。 */
 .ki-hero-img {
   display: block; width: 100%; max-width: 100%;
   aspect-ratio: 16 / 9; object-fit: cover; object-position: center;
 }
 .ki-hero-text {
-  padding: 18px 16px 20px; text-align: center; background: var(--ki-card);
+  padding: 16px 16px 20px; text-align: center; background: var(--ki-card);
 }
-/* 読み上げと検索のためだけの見出し。画面には出さない。 */
-.ki-only-read {
+/* 狭い画面では、写真の中に名前があるので文字は出さない。
+ * ただし見出しが無いとページの題が伝わらないので、
+ * 読み上げと検索のためだけに残しておく。 */
+.ki-hero .ki-logo {
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
   overflow: hidden; clip-path: inset(50%); white-space: nowrap;
 }
 .ki-hero-copy { margin-top: 0; }
-.ki-hero .ki-lead { margin: 0 auto; max-width: 26em; font-size: 15.5px; }
-.ki-hero .ki-pick { margin: 10px 0 0; }
+/* 名前を出さないぶん、説明の字を大きくして読みやすくする */
+.ki-hero .ki-lead {
+  margin: 0 auto; max-width: 24em;
+  font-size: clamp(16.5px, 4.6vw, 19px); line-height: 1.85;
+}
+.ki-hero .ki-pick { margin: 12px 0 0; font-size: clamp(15px, 4.1vw, 17px); }
 
-/* 写真の中に名前が入っているので、文字を重ねずに下にそろえて置く。
- * 広い画面では、文だけ少し大きくする。 */
+/* 横に余裕があるときだけ、写真の空いたところに文字を重ねる。
+ * 名前は上の帯、リード文と「まずは〜」は左下のあき。
+ * 人物にかからない範囲なので、下のほうの字は大きくできる。 */
 @media (min-width: 761px) {
-  .ki-hero-text { padding: 22px 20px 24px; }
-  .ki-hero .ki-lead { font-size: clamp(16px, 1.9vw, 19px); line-height: 1.9; max-width: 38em; }
-  .ki-hero .ki-pick { margin: 12px 0 0; font-size: clamp(15px, 1.7vw, 17px); }
+  .ki-hero-text {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: flex-start;
+    /* 上下の % は幅を基準に計算されるので、見た目より小さく効く。
+     * 下は 3% で、写真の下のふちのすぐ上に「まずは〜」が来る。 */
+    padding: 5% 0 3% clamp(20px, 3.6vw, 44px);
+    /* 壁がもともと白いので、うすくかけるだけで字は読める。
+     * 濃くすると「心」の文字が消えてしまう。 */
+    text-align: left; background: linear-gradient(96deg,
+      rgba(255,251,242,.86) 0%, rgba(255,251,242,.66) 34%, rgba(255,251,242,0) 54%);
+  }
+  .ki-hero .ki-logo {
+    position: static; width: auto; height: auto; margin: 0;
+    overflow: visible; clip-path: none;
+    text-align: left; font-size: clamp(28px, 5.6vw, 66px);
+  }
+  .ki-hero-copy { margin: auto 0 0; width: 48%; }
+  .ki-hero .ki-lead {
+    margin: 0; max-width: none; text-align: left;
+    font-size: clamp(17px, 2.1vw, 21px); line-height: 1.95;
+  }
+  .ki-hero .ki-pick {
+    margin: 14px 0 0; text-align: left;
+    font-size: clamp(15px, 1.9vw, 19px);
+  }
 }
 
 /* ---------- トップページ ---------- */
