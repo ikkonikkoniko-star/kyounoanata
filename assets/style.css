@@ -1,3 +1,27 @@
+/* ---------- 字体 ----------
+ * 丸くてPOPな「Rounded M+ 1c」をサイトの中に置いて使う。
+ * 端末まかせだと、iPhoneは丸ゴ、Androidは角ゴと形が変わってしまうため。
+ * ファイルはこのサイトの中にあるので、外のどこにも取りに行かない。
+ * ライセンスと作り直し方は assets/font/README.txt を見ること。
+ * swap にしてあるので、読み込みが終わるまでは端末の字で表示され、
+ * 終わったら差し替わる。文字が消える時間は作らない。 */
+@font-face {
+  font-family: "KokoRounded";
+  src: url("font/mplus-rounded-400.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "KokoRounded";
+  src: url("font/mplus-rounded-700.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+/* 800 の指定もこれが使われる（近いほうが選ばれる） */
+@font-face {
+  font-family: "KokoRounded";
+  src: url("font/mplus-rounded-900.woff2") format("woff2");
+  font-weight: 900; font-style: normal; font-display: swap;
+}
+
 /* POPな見た目は3Ver共通。差分は versions.js 側の文言だけ。 */
 :root {
   --ki-ink: #2b2b2b;
@@ -24,7 +48,8 @@ body {
     radial-gradient(circle at 88% 22%, rgba(127,204,227,.20), transparent 40%),
     var(--ki-paper);
   color: var(--ki-ink);
-  font-family: "Hiragino Maru Gothic ProN", "Hiragino Kaku Gothic ProN",
+  /* 読み込みが終わるまでと、字体に無い文字のときは、うしろの端末の字を使う */
+  font-family: "KokoRounded", "Hiragino Maru Gothic ProN", "Hiragino Kaku Gothic ProN",
                "Yu Gothic Medium", "Meiryo", system-ui, sans-serif;
   line-height: 1.75;
   -webkit-text-size-adjust: 100%;
