@@ -383,7 +383,13 @@ KI.init = function (versionId) {
       omakeTimer = setTimeout(function () {
         omake.hidden = false;
         /* 次の描画で動きだすようにする */
-        setTimeout(function () { omake.className = 'ki-omake is-in'; }, 20);
+        setTimeout(function () {
+          omake.className = 'ki-omake is-in';
+          /* 箱は文章の下に出るので、そのままだと画面の外にいることが多い。
+           * 出たのに気づいてもらえないので、外にいるときだけ見える位置まで動かす。 */
+          var r = omake.getBoundingClientRect();
+          if (r.bottom > window.innerHeight - 24) scrollTo_(omake, 'nearest');
+        }, 20);
       }, KI.CHEER_DELAY);
     }
 

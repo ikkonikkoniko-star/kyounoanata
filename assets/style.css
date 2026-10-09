@@ -250,6 +250,8 @@ body {
  * 3回に1回くらい、文章を読み終わったころに箱が飛び出す。
  * 押すとふたが開いて、中から顔が出て声が鳴る。 */
 .ki-omake {
+  /* 画面の外に出ているときに動かすので、ふちにぴったり付かないよう余白をとる */
+  scroll-margin: 16px 0 26px;
   position: relative; overflow: hidden;
   margin-top: 18px; padding: 16px 18px 15px; text-align: center;
   background: linear-gradient(135deg, #FFF6DF 0%, #FFE6A6 100%);
