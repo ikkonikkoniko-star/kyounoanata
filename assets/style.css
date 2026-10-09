@@ -403,9 +403,10 @@ body {
   display: block; width: 100%; max-width: 100%; background: #EDEAE4;
   aspect-ratio: 4 / 3; object-fit: cover; object-position: right center;
 }
-/* 帯なので、文字の下じきは敷かずに紙の色のまま続ける */
+/* 帯なので、文字の下じきは敷かずに紙の色のまま続ける。
+ * 左右のあきは、名前を大きく出すぶん狭くしてある。 */
 .ki-hero-text {
-  padding: 18px 18px 4px; text-align: center;
+  padding: 18px 10px 4px; text-align: center;
 }
 /* 古いページが残っていても見出しが露出しないように、この名前でも隠しておく */
 .ki-only-read {
@@ -413,8 +414,10 @@ body {
   overflow: hidden; clip-path: inset(50%); white-space: nowrap;
 }
 
-/* 狭い画面では、名前は写真のすぐ下。ここがページの題になる。 */
-.ki-hero .ki-logo { text-align: center; }
+/* 狭い画面では、名前は写真のすぐ下。ここがページの題になる。
+ * ページの顔なので、1行に収まるぎりぎりまで大きくする。
+ * 10文字を折り返さずに並べるので、これ以上は上げられない。 */
+.ki-hero .ki-logo { text-align: center; font-size: clamp(28px, 10vw, 64px); }
 .ki-hero-copy { margin-top: 14px; }
 .ki-hero .ki-lead {
   margin: 0 auto; max-width: 24em;
