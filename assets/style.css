@@ -417,11 +417,11 @@ body {
 /* 狭い画面では、名前は写真のすぐ下。ここがページの題になる。
  * ページの顔なので、1行に収まるぎりぎりまで大きくする。
  * 10文字を折り返さずに並べるので、これ以上は上げられない。 */
-.ki-hero .ki-logo { text-align: center; font-size: clamp(28px, 10vw, 64px); }
+.ki-hero .ki-logo { text-align: center; font-size: clamp(27px, 9vw, 60px); }
 .ki-hero-copy { margin-top: 14px; }
 .ki-hero .ki-lead {
   margin: 0 auto; max-width: 24em;
-  font-size: clamp(16px, 4.3vw, 18px); line-height: 1.8;
+  font-size: clamp(14.5px, 4.6vw, 18px); line-height: 1.8;
 }
 .ki-hero .ki-pick { margin: 12px 0 0; font-size: clamp(15px, 4.1vw, 17px); }
 

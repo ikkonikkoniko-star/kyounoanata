@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>きょうのKOKOいろ</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%8E%A8%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="assets/style.css?v=20261009b">
+<link rel="stylesheet" href="assets/style.css?v=20261009c">
 </head>
 <body>
 <div id="app"></div>
-<script src="assets/colors.js?v=20261009b"></script>
-<script src="assets/character.js?v=20261009b"></script>
-<script src="assets/versions.js?v=20261009b"></script>
-<script src="assets/voices.js?v=20261009b"></script>
-<script src="assets/app.js?v=20261009b"></script>
+<script src="assets/colors.js?v=20261009c"></script>
+<script src="assets/character.js?v=20261009c"></script>
+<script src="assets/versions.js?v=20261009c"></script>
+<script src="assets/voices.js?v=20261009c"></script>
+<script src="assets/app.js?v=20261009c"></script>
 <script>
 (function () {
   var root = document.getElementById('app');
@@ -53,11 +53,14 @@
 
   var lead = document.createElement('p');
   lead.className = 'ki-lead';
-  /* 「気分をひとつ選ぶだけで」から下の段にする。
-   * 自然に折り返させると「気／分」のように語の途中で切れてしまう。 */
-  lead.appendChild(document.createTextNode('今日のあなたは何色？'));
-  lead.appendChild(document.createElement('br'));
-  lead.appendChild(document.createTextNode('今の気分を選んでいただくと、あなたを後押しする色を一つご提案します！'));
+  /* 3段に分ける。自然に折り返させると「気／分」のように語の途中で切れるので、
+   * 意味の切れ目で自分で改行する。 */
+  ['今日のあなたは何色？',
+   '今の気分を選んでいただくと、',
+   'あなたを後押しする色を一つご提案します！'].forEach(function (line, i) {
+    if (i) lead.appendChild(document.createElement('br'));
+    lead.appendChild(document.createTextNode(line));
+  });
   copy.appendChild(lead);
 
   var pick = document.createElement('p');
