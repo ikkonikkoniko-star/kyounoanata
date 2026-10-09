@@ -29,7 +29,7 @@ KI.CHEER_BY = 'KOKOIRO代表　播本なおこ より';
 
 /* 声を出さないVer。箱もイラストもそのままで、声の場所に言葉を大きく出す。 */
 KI.CHEER_NO_VOICE = ['kids'];
-KI.CHEER_WORDS = ['あたり！', '大あたり！', 'やったね！', 'いいね！'];
+KI.CHEER_WORDS = ['あたり！', '大あたり！', 'やったね！', 'おめでとう！', 'ばんざい！'];
 
 KI.CHEERS = [
   { file: 'cheer1.m4a' },

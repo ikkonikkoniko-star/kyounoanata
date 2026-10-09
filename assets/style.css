@@ -1,25 +1,31 @@
 /* ---------- 字体 ----------
- * 丸くてPOPな「Rounded M+ 1c」をサイトの中に置いて使う。
- * 使うのは「あたり」のおまけの中だけ。ほかは今までどおり端末の字。
- * ファイルはこのサイトの中にあるので、外のどこにも取りに行かない。
- * おまけが出たときに初めて読み込まれるので、ふだんは何も増えない。
+ * サイト全体で、丸くてPOPな「Rounded M+ 1c」を使う。
+ * 端末まかせだと、iPhoneは丸ゴ、Androidは角ゴと形が変わってしまうため、
+ * ファイルをサイトの中に置いて、どの端末でも同じ形にしている。
+ * 外のどこにも取りに行かない。
+ *
+ * 太さは、字体のもつ太さを一段ずつ軽いほうにずらしてある。
+ *   ページで 400 と書いたところ → Regular
+ *   ページで 700 と書いたところ → Medium
+ *   ページで 800・900 と書いたところ → ExtraBold
+ * いちばん太い Black は使わない。重たく見えるため。
+ *
  * ライセンスと作り直し方は assets/font/README.txt を見ること。
  * swap にしてあるので、読み込みが終わるまでは端末の字で表示され、
  * 終わったら差し替わる。文字が消える時間は作らない。 */
 @font-face {
   font-family: "KokoRounded";
-  src: url("font/mplus-rounded-400.woff2") format("woff2");
+  src: url("font/mplus-rounded-regular.woff2") format("woff2");
   font-weight: 400; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: "KokoRounded";
-  src: url("font/mplus-rounded-700.woff2") format("woff2");
+  src: url("font/mplus-rounded-medium.woff2") format("woff2");
   font-weight: 700; font-style: normal; font-display: swap;
 }
-/* 800 の指定もこれが使われる（近いほうが選ばれる） */
 @font-face {
   font-family: "KokoRounded";
-  src: url("font/mplus-rounded-900.woff2") format("woff2");
+  src: url("font/mplus-rounded-extrabold.woff2") format("woff2");
   font-weight: 900; font-style: normal; font-display: swap;
 }
 
@@ -34,8 +40,8 @@
   --ki-accent: #F2B231;
   --ki-koko: #FFD84A;   /* ロゴの「KOKO」の黄色 */
   --ki-round: 20px;
-  /* ふだんの字。端末に入っているものを使う。 */
-  --ki-font: "Hiragino Maru Gothic ProN", "Hiragino Kaku Gothic ProN",
+  /* 読み込みが終わるまでと、字体に無い文字のときは、うしろの端末の字を使う */
+  --ki-font: "KokoRounded", "Hiragino Maru Gothic ProN", "Hiragino Kaku Gothic ProN",
              "Yu Gothic Medium", "Meiryo", system-ui, sans-serif;
 }
 
@@ -244,8 +250,6 @@ body {
  * 3回に1回くらい、文章を読み終わったころに箱が飛び出す。
  * 押すとふたが開いて、中から顔が出て声が鳴る。 */
 .ki-omake {
-  /* ここだけPOPな字体。字体に無い文字（絵文字など）はうしろの字で出る。 */
-  font-family: "KokoRounded", var(--ki-font);
   position: relative; overflow: hidden;
   margin-top: 18px; padding: 16px 18px 15px; text-align: center;
   background: linear-gradient(135deg, #FFF6DF 0%, #FFE6A6 100%);
