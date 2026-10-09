@@ -264,6 +264,13 @@ function buildOmake(cheer) {
   return wrap;
 }
 
+/* 画面を動かす。ホームページに埋めこまれているときは、
+ * 枠の中で動かしても見えないので、親ページに頼む（embed.js 側）。 */
+function scrollTo_(el, block) {
+  if (KI.scrollToEl) KI.scrollToEl(el);
+  else el.scrollIntoView({ behavior: 'smooth', block: block });
+}
+
 function buildNav(current) {
   var nav = el('nav', 'ki-nav');
   [
@@ -387,11 +394,7 @@ KI.init = function (versionId) {
 
     /* スマホでは結果に寄せるとイラストが画面の外に出てしまうので、
      * イラストの頭から見えるようにスクロールする。結果はその下に続く。 */
-    if (isStacked()) {
-      stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
+    scrollTo_(isStacked() ? stage : result, isStacked() ? 'start' : 'nearest');
   }
 
   function reset() {
@@ -401,6 +404,6 @@ KI.init = function (versionId) {
     chipWrap.hidden = false;
     figure.innerHTML = KI.renderCharacter(null, versionId);
     document.documentElement.style.removeProperty('--ki-accent');
-    stage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    scrollTo_(stage, 'nearest');
   }
 };

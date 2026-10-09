@@ -1,0 +1,97 @@
+きょうのKOKOいろ　ホームページに貼るコード
+==========================================
+
+KOKOIROのホームページの、置きたい場所に下のコードを貼ってください。
+貼るのは一度だけです。そのあと中身を直したくなったら、
+ここ（このリポジトリ）を直せば、ホームページ側は何もしなくても変わります。
+
+
+■ 貼るコード（この8行から下、「ここまで」まで全部）
+
+<!-- きょうのKOKOいろ　ここから -->
+<iframe id="kokoiro"
+        src="https://ikkonikkoniko-star.github.io/kyounoanata/"
+        title="きょうのKOKOいろ"
+        loading="lazy"
+        style="display:block; width:100%; border:0; height:1200px;"></iframe>
+<script>
+window.addEventListener('message', function (e) {
+  if (e.origin !== 'https://ikkonikkoniko-star.github.io') return;
+  var d = e.data;
+  if (!d || typeof d !== 'object') return;
+  var f = document.getElementById('kokoiro');
+  if (!f) return;
+  if (d.kokoiro === 'height') {
+    f.style.height = d.height + 'px';
+  }
+  if (d.kokoiro === 'scroll') {
+    window.scrollTo({
+      top: f.getBoundingClientRect().top + window.pageYOffset + d.top - 16,
+      behavior: 'smooth'
+    });
+  }
+});
+</script>
+<!-- きょうのKOKOいろ　ここまで -->
+
+
+■ どこに貼るか
+
+ホームページの作り方によって、貼る場所の名前が違います。
+「HTML」「ソースコード」「カスタムHTML」「埋め込み」などと
+書かれたところを探してください。
+
+  WordPress … ブロックを足す →「カスタムHTML」
+  Wix       … 追加 → 埋め込み →「HTMLを埋め込む」→ コード
+  ペライチ   … ブロックを追加 →「HTML」
+  Jimdo     … コンテンツを追加 →「ウィジェット／HTML」
+  STUDIO    … 追加 →「エンベッド」
+
+ページ全体を1枚で見せたいときは、空のページを1つ作って、
+そこにこのコードだけを貼るのがいちばんきれいです。
+
+
+■ このコードは何をしているか
+
+・iframe … ホームページの中に「きょうのKOKOいろ」を窓のように置く
+・script … 中身の高さに合わせて窓の高さを変える（窓の中にスクロールバーを出さない）
+            と、結果が出たときにホームページ側を結果の位置まで動かす
+
+script が無いと、窓の高さが 1200px で固定になります。
+それでも動きますが、下に余白が出たり、窓の中にスクロールバーが出たりします。
+
+
+■ script が貼れないホームページのとき
+
+セキュリティの設定で <script> が消されてしまう場合があります。
+そのときは iframe の部分だけ貼って、高さを決め打ちにしてください。
+
+<iframe src="https://ikkonikkoniko-star.github.io/kyounoanata/"
+        title="きょうのKOKOいろ"
+        style="display:block; width:100%; border:0; height:1600px;"></iframe>
+
+height の数字を変えると窓の高さが変わります。
+携帯で見たときに下が切れないよう、1600〜2000 くらいから試してください。
+
+
+■ 直したくなったとき
+
+ここ（このリポジトリ）の中身を直して公開すれば、
+ホームページ側は何もしなくても、新しいものに切り替わります。
+
+  例： 季節で色の説明を変える  → assets/versions.js
+      「あたり」のことばを変える → assets/cheers.js
+      出る割合・待ち時間を変える → assets/cheers.js の CHEER_RATE / CHEER_DELAY
+
+見ている人のブラウザが古いものを覚えていることがあるので、
+直したときは HTML の中の ?v=……（版の番号）も一緒に変えてください。
+
+
+■ 外部とのやりとりについて
+
+「きょうのKOKOいろ」は、外のどこにも問い合わせをしません。
+文字の形（字体）も写真も音も、すべてこのサイトの中に置いてあります。
+
+ホームページに埋めこんだときだけ、窓の高さとスクロールの位置を
+親ページ（KOKOIROのホームページ）に伝えます。送るのはこの数字だけで、
+見ている人の情報は何も送りません。外のどこかに送ることもありません。
