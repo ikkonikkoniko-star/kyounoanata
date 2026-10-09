@@ -6,8 +6,8 @@
 <meta name="robots" content="noindex">
 <title>おまけの声 確認用</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%8E%81%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="assets/style.css?v=20261009f">
-<link rel="stylesheet" href="assets/kakunin.css?v=20261009f">
+<link rel="stylesheet" href="assets/style.css?v=20261009g">
+<link rel="stylesheet" href="assets/kakunin.css?v=20261009g">
 <style>
 /* このページだけの、聞き分け用の並び */
 .oc { max-width: 620px; margin: 0 auto 26px; }
@@ -29,6 +29,7 @@
   font-size: 15px; font-weight: 900;
 }
 .oc-item .voice { flex: 1; min-width: 0; }
+.oc-file { flex: none; font-size: 12px; color: #7A6A3A; font-weight: 700; }
 </style>
 </head>
 <body>
@@ -41,7 +42,7 @@
 
 <section class="oc">
   <h2>① 6本を聞き分ける</h2>
-  <p class="oc-lead">送っていただいた順に番号をつけています。4番が寝るメッセージです。</p>
+  <p class="oc-lead">いま入っている声です。番号のうしろがファイル名。3番（cheer4-neru）が寝るメッセージで、暖色系の色では出ません。</p>
   <ul class="oc-list" id="list"></ul>
 </section>
 
@@ -55,18 +56,20 @@
 
 <div id="app"></div>
 
-<script src="assets/colors.js?v=20261009f"></script>
-<script src="assets/character.js?v=20261009f"></script>
-<script src="assets/versions.js?v=20261009f"></script>
-<script src="assets/voices.js?v=20261009f"></script>
-<script src="assets/cheers.js?v=20261009f"></script>
-<script src="assets/app.js?v=20261009f"></script>
+<script src="assets/colors.js?v=20261009g"></script>
+<script src="assets/character.js?v=20261009g"></script>
+<script src="assets/versions.js?v=20261009g"></script>
+<script src="assets/voices.js?v=20261009g"></script>
+<script src="assets/cheers.js?v=20261009g"></script>
+<script src="assets/app.js?v=20261009g"></script>
 <script>
 /* このページだけの割り当て。ふだんのページには出ない。 */
 KI.CHEER_RATE = 1;      /* 確認しやすいように毎回出す */
 KI.CHEER_DELAY = 1200;  /* 待ち時間も短くする（本番は5秒） */
 
-/* ①の聞き分け用の並びを作る */
+/* 聞き分け用の並びを作る。
+ * 番号のうしろにファイル名も出す。番号は入れ替えで動くが、
+ * ファイル名は動かないので、「どれを消す」の行き違いが起きない。 */
 (function () {
   var list = document.getElementById('list');
   KI.CHEERS.forEach(function (c, i) {
@@ -77,6 +80,10 @@ KI.CHEER_DELAY = 1200;  /* 待ち時間も短くする（本番は5秒） */
     no.textContent = String(i + 1);
     li.appendChild(no);
     li.appendChild(KI.buildVoiceBar(KI.VOICE_DIR + c.file, (i + 1) + '番'));
+    var nm = document.createElement('span');
+    nm.className = 'oc-file';
+    nm.textContent = c.file.replace('.m4a', '') + (c.skip ? '（暖色では出ない）' : '');
+    li.appendChild(nm);
     list.appendChild(li);
   });
 })();

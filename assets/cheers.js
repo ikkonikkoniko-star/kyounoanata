@@ -32,13 +32,14 @@ KI.CHEER_NO_VOICE = ['kids'];
 KI.CHEER_WORDS = ['あたり！', '大あたり！', 'やったね！', 'おめでとう！', 'ばんざい！'];
 
 KI.CHEERS = [
-  { file: 'cheer1.m4a' },
   { file: 'cheer2.m4a' },
   { file: 'cheer3.m4a' },
   /* 寝るメッセージ。朝に使う暖色系では出さない。 */
   { file: 'cheer4-neru.m4a', skip: KI.WARM },
   { file: 'cheer5.m4a' },
-  { file: 'cheer6.m4a' }
+  { file: 'cheer6.m4a' },
+  { file: 'cheer7.m4a' },
+  { file: 'cheer8.m4a' }
 ];
 
 /* 直前に出たものを覚えておいて、続けて同じものが出ないようにする */
