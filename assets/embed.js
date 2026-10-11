@@ -137,10 +137,18 @@ window.KI = window.KI || {};
 
   /* el が null のときは、埋めこみの先頭へ戻す。
    * gentle を付けると、見えるまでゆっくり動かす。 */
+  /* 相手を画面のてっぺんに持っていくと、ホームページ側のメニューが
+   * 上に貼りついている場合、その下に潜りこんで読めなくなる。
+   * メニューの高さは枠の中からは分からないので、よくある高さぶんの
+   * 余白をとっておく。メニューが無いページでも、少し余裕が空くだけで害はない。 */
+  var HEAD_ROOM = 100;
+
   KI.scrollToEl = function (el, gentle) {
     stopGlide();
     var top = 0;
-    if (el) top = Math.max(0, Math.round(el.getBoundingClientRect().top + window.pageYOffset));
+    if (el) {
+      top = Math.max(0, Math.round(el.getBoundingClientRect().top + window.pageYOffset) - HEAD_ROOM);
+    }
 
     if (parentListens) {
       if (gentle && el) creepTo(el, top, 1800);
