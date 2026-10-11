@@ -153,7 +153,7 @@ window.KI = window.KI || {};
       else window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
-    if (!el) { KI.backToTop(); return; }
+    if (!el) { tellScroll(-HEAD_ROOM); return; }
 
     var top = Math.max(0,
       Math.round(el.getBoundingClientRect().top + window.pageYOffset) - HEAD_ROOM);
@@ -169,14 +169,4 @@ window.KI = window.KI || {};
     }, 120);
   };
 
-  /* やり直しのときは、いつも埋めこみの先頭に戻す。
-   * 「もう見えているなら動かさない」にしていたが、パソコンでは
-   * イラストが左の列にいて結果を見ているあいだもずっと見えているため、
-   * いつも「動かさない」と判断してしまい、下がったまま次が始まっていた。 */
-  KI.backToTop = function () {
-    stopGlide();
-    if (!parentListens) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
-    /* 先頭より少し上を指して、ホームページのメニューに隠れないようにする */
-    tellScroll(-HEAD_ROOM);
-  };
 })();

@@ -431,14 +431,15 @@ KI.init = function (versionId) {
     again.addEventListener('click', reset);
     result.appendChild(again);
 
-    /* スマホでは結果に寄せるとイラストが画面の外に出てしまうので、
-     * イラストの頭から見えるようにスクロールする。結果はその下に続く。
+    /* ホームページに埋めこまれているときは、画面を動かさない。
+     * 結果は気持ちのボタンと同じ場所に出るので、動かす必要がない。
+     * 選ぶたびに上下すると落ち着かない、という声があったため。
      *
-     * パソコンでは、結果は気持ちのボタンと同じ場所に出る。
-     * 見るべきは色の名前のあたりなので、そこを目印にする。
-     * 結果の箱ぜんぶを目印にすると、下のほうが画面から出ているだけで
-     * 「見えていない」と判断して動かしてしまい、画面が下がってしまう。 */
-    scrollTo_(isStacked() ? stage : head, isStacked() ? 'start' : 'nearest');
+     * 単独で開いているときは、これまでどおり。スマホでは結果に寄せると
+     * イラストが画面の外に出てしまうので、イラストの頭から見えるようにする。 */
+    if (!KI.scrollToEl) {
+      scrollTo_(isStacked() ? stage : head, isStacked() ? 'start' : 'nearest');
+    }
   }
 
   function reset() {
@@ -448,12 +449,8 @@ KI.init = function (versionId) {
     chipWrap.hidden = false;
     figure.innerHTML = KI.renderCharacter(null, versionId);
     document.documentElement.style.removeProperty('--ki-accent');
-    /* やり直すときは、いつも同じ場所（いちばん上）から始める。
-     * イラストや結果の位置を目印にすると、長さが回ごとに変わるぶん
-     * 開始位置が少しずつずれていき、選ぶたびに下へ下がってしまう。
-     * ただし、もう先頭が見えているなら動かさない。
-     * 見えているのに動かすと、かえって画面が揺れる。 */
-    if (KI.backToTop) KI.backToTop();
-    else scrollTo_(null, 'start');
+    /* ここも同じ。埋めこみのときは動かさない。
+     * 気持ちのボタンは結果と同じ場所に戻るので、動かす必要がない。 */
+    if (!KI.scrollToEl) scrollTo_(null, 'start');
   }
 };
