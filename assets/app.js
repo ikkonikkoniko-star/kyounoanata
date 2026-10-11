@@ -266,9 +266,11 @@ function buildOmake(cheer) {
 
 /* 画面を動かす。ホームページに埋めこまれているときは、
  * 枠の中で動かしても見えないので、親ページに頼む（embed.js 側）。 */
+/* el を null にすると、ページの先頭へ戻す。 */
 function scrollTo_(el, block, gentle) {
-  if (KI.scrollToEl) KI.scrollToEl(el, gentle);
-  else if (gentle) gentleScroll(el);
+  if (KI.scrollToEl) { KI.scrollToEl(el, gentle); return; }
+  if (!el) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  if (gentle) gentleScroll(el);
   else el.scrollIntoView({ behavior: 'smooth', block: block });
 }
 
@@ -441,6 +443,9 @@ KI.init = function (versionId) {
     chipWrap.hidden = false;
     figure.innerHTML = KI.renderCharacter(null, versionId);
     document.documentElement.style.removeProperty('--ki-accent');
-    scrollTo_(stage, 'nearest');
+    /* やり直すときは、いつも同じ場所（いちばん上）から始める。
+     * イラストや結果の位置を目印にすると、長さが回ごとに変わるぶん
+     * 開始位置が少しずつずれていき、選ぶたびに下へ下がってしまう。 */
+    scrollTo_(null, 'start');
   }
 };
