@@ -42,7 +42,16 @@ window.KI = window.KI || {};
   /* 枠の中では、ページ自身をスクロールしても画面は動かない。
    * 「枠の上から数えてここまで動かして」と親ページに頼む。 */
   KI.scrollToEl = function (el) {
-    var top = Math.max(0, Math.round(el.getBoundingClientRect().top + window.pageYOffset));
-    window.parent.postMessage({ kokoiro: 'scroll', top: top }, '*');
+    var doc = document.documentElement;
+    /* 親ページが枠の高さを合わせてくれているときは、枠の中にスクロールが
+     * 無いので、自分で動かしても画面は動かない。親に頼む。
+     * 合わせてくれていないとき（貼り付けたコードの script が消された場合など）は
+     * 枠の中にスクロールがあるので、自分で動かす。 */
+    if (doc.scrollHeight <= window.innerHeight + 4) {
+      var top = Math.max(0, Math.round(el.getBoundingClientRect().top + window.pageYOffset));
+      window.parent.postMessage({ kokoiro: 'scroll', top: top }, '*');
+    } else {
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   };
 })();

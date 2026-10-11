@@ -386,9 +386,16 @@ KI.init = function (versionId) {
         setTimeout(function () {
           omake.className = 'ki-omake is-in';
           /* 箱は文章の下に出るので、そのままだと画面の外にいることが多い。
-           * 出たのに気づいてもらえないので、外にいるときだけ見える位置まで動かす。 */
+           * 出たのに気づいてもらえないので、見える位置まで動かす。
+           *
+           * ホームページに埋めこまれているときは、枠が中身の高さぴったりに
+           * なっているため、枠の中では何もかも「見えている」ことになる。
+           * ここで自分で判定すると、いつも「見えている」と誤って判断して
+           * 動かさなくなる。だから埋めこみのときは判定せず、親ページに任せる。 */
           var r = omake.getBoundingClientRect();
-          if (r.bottom > window.innerHeight - 24) scrollTo_(omake, 'nearest');
+          if (KI.scrollToEl || r.bottom > window.innerHeight - 24) {
+            scrollTo_(omake, 'nearest');
+          }
         }, 20);
       }, KI.CHEER_DELAY);
     }
