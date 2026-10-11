@@ -432,8 +432,13 @@ KI.init = function (versionId) {
     result.appendChild(again);
 
     /* スマホでは結果に寄せるとイラストが画面の外に出てしまうので、
-     * イラストの頭から見えるようにスクロールする。結果はその下に続く。 */
-    scrollTo_(isStacked() ? stage : result, isStacked() ? 'start' : 'nearest');
+     * イラストの頭から見えるようにスクロールする。結果はその下に続く。
+     *
+     * パソコンでは、結果は気持ちのボタンと同じ場所に出る。
+     * 見るべきは色の名前のあたりなので、そこを目印にする。
+     * 結果の箱ぜんぶを目印にすると、下のほうが画面から出ているだけで
+     * 「見えていない」と判断して動かしてしまい、画面が下がってしまう。 */
+    scrollTo_(isStacked() ? stage : head, isStacked() ? 'start' : 'nearest');
   }
 
   function reset() {
