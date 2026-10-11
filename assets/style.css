@@ -99,6 +99,23 @@ body {
 
 .ki-tagline { margin: 10px 0 0; color: var(--ki-muted); font-size: 14px; }
 
+
+/* ---------- ホームページに埋めこんだとき ----------
+ * embed.js が html に ki-embed を付ける。単独で開いたときは付かない。 */
+
+/* 枠が中身より高くなった場合でも、下が白く抜けて見えないようにする。
+ * 色をつけているのは body だけなので、その下は何も塗られていなかった。 */
+html { background: var(--ki-paper); }
+
+/* 題はホームページ側がすでに出しているので、こちらでは出さない。
+ * 読み上げと検索のためだけに残す。そのぶん中身が上に来る。 */
+.ki-embed .ki-header .ki-logo,
+.ki-embed .ki-header .ki-tagline {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+.ki-embed .ki-header { padding: 14px 0 4px; }
+
 /* ---------- 本体 ---------- */
 .ki-main {
   max-width: 980px; margin: 24px auto 0;
