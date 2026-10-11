@@ -41,7 +41,35 @@ window.KI = window.KI || {};
 
   /* 枠の中では、ページ自身をスクロールしても画面は動かない。
    * 「枠の上から数えてここまで動かして」と親ページに頼む。 */
-  KI.scrollToEl = function (el) {
+  /* 親ページにいまどこまで動いてもらったかを覚えておく。
+   * 次に動かすとき、そこからの道のりが分かるので、ゆっくり動かせる。 */
+  var lastTop = null;
+  var glide = null;
+
+  function tellScroll(top) {
+    lastTop = top;
+    window.parent.postMessage({ kokoiro: 'scroll', top: top }, '*');
+  }
+
+  /* 親ページは「ここへ」と言われると自分で滑らかに動く。
+   * その「ここへ」を少しずつずらして送ると、短い距離を何度も動くことになり、
+   * 一気に飛ぶより落ち着いた動きになる。 */
+  function glideTo(target, ms) {
+    if (glide) { clearInterval(glide); glide = null; }
+    if (lastTop === null || Math.abs(target - lastTop) < 40) { tellScroll(target); return; }
+    var from = lastTop, dist = target - from, t0 = Date.now();
+    glide = setInterval(function () {
+      var k = Math.min(1, (Date.now() - t0) / ms);
+      /* 一定の速さで送る。親ページは少し遅れて追いかけてくるので、
+       * 緩急をつけると、遅れを取り戻すときにガクッと動いてしまう。
+       * 一定にしておくのがいちばん落ち着いて見える。 */
+      tellScroll(Math.round(from + dist * k));
+      if (k >= 1) { clearInterval(glide); glide = null; }
+    }, 40);
+  }
+
+  /* gentle を付けると、ゆっくり動く。ふだんは今までどおり一度で動かす。 */
+  KI.scrollToEl = function (el, gentle) {
     var doc = document.documentElement;
     /* 親ページが枠の高さを合わせてくれているときは、枠の中にスクロールが
      * 無いので、自分で動かしても画面は動かない。親に頼む。
@@ -49,7 +77,8 @@ window.KI = window.KI || {};
      * 枠の中にスクロールがあるので、自分で動かす。 */
     if (doc.scrollHeight <= window.innerHeight + 4) {
       var top = Math.max(0, Math.round(el.getBoundingClientRect().top + window.pageYOffset));
-      window.parent.postMessage({ kokoiro: 'scroll', top: top }, '*');
+      if (gentle) glideTo(top, 1800);
+      else tellScroll(top);
     } else {
       el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }

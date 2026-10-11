@@ -266,9 +266,33 @@ function buildOmake(cheer) {
 
 /* 画面を動かす。ホームページに埋めこまれているときは、
  * 枠の中で動かしても見えないので、親ページに頼む（embed.js 側）。 */
-function scrollTo_(el, block) {
-  if (KI.scrollToEl) KI.scrollToEl(el);
+function scrollTo_(el, block, gentle) {
+  if (KI.scrollToEl) KI.scrollToEl(el, gentle);
+  else if (gentle) gentleScroll(el);
   else el.scrollIntoView({ behavior: 'smooth', block: block });
+}
+
+/* 埋めこまずに直接開いているときの、ゆっくりしたスクロール。
+ * ブラウザまかせ（behavior: smooth）だと、距離が長いときに速すぎて
+ * 画面が飛んだように見えるので、自分で時間をかけて動かす。 */
+function gentleScroll(el) {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    el.scrollIntoView({ block: 'nearest' });
+    return;
+  }
+  var r = el.getBoundingClientRect();
+  /* 下にはみ出しているぶんだけ動かす。必要以上には動かさない。 */
+  var need = r.bottom - (window.innerHeight - 26);
+  if (need <= 0) return;
+  var from = window.pageYOffset, ms = 1100, t0 = null;
+  function step(now) {
+    if (t0 === null) t0 = now;
+    var k = Math.min(1, (now - t0) / ms);
+    var e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    window.scrollTo(0, from + need * e);
+    if (k < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
 }
 
 function buildNav(current) {
@@ -394,7 +418,7 @@ KI.init = function (versionId) {
            * 動かさなくなる。だから埋めこみのときは判定せず、親ページに任せる。 */
           var r = omake.getBoundingClientRect();
           if (KI.scrollToEl || r.bottom > window.innerHeight - 24) {
-            scrollTo_(omake, 'nearest');
+            scrollTo_(omake, 'nearest', true);
           }
         }, 20);
       }, KI.CHEER_DELAY);
