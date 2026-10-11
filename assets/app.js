@@ -445,7 +445,10 @@ KI.init = function (versionId) {
     document.documentElement.style.removeProperty('--ki-accent');
     /* やり直すときは、いつも同じ場所（いちばん上）から始める。
      * イラストや結果の位置を目印にすると、長さが回ごとに変わるぶん
-     * 開始位置が少しずつずれていき、選ぶたびに下へ下がってしまう。 */
-    scrollTo_(null, 'start');
+     * 開始位置が少しずつずれていき、選ぶたびに下へ下がってしまう。
+     * ただし、もう先頭が見えているなら動かさない。
+     * 見えているのに動かすと、かえって画面が揺れる。 */
+    if (KI.backToTop) KI.backToTop(stage);
+    else scrollTo_(null, 'start');
   }
 };

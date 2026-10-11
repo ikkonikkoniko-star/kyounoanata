@@ -96,15 +96,54 @@ window.KI = window.KI || {};
     }, 40);
   }
 
+  /* いま本当に画面に入っているかを見る。
+   *
+   * 枠の中からは、親ページの画面の大きさを知ることができない。
+   * そのため「あと何px動かせば見えるか」を計算できず、これまでは
+   * 相手を画面のいちばん上に持ってくるところまで動かしていた。
+   * それが「行き過ぎる」の正体。
+   *
+   * IntersectionObserver は、枠ごしでも「本当に見えているか」を
+   * 教えてくれる。動かしながらこれを見て、見えた時点で止める。 */
+  function watcher(el) {
+    var state = { ratio: 0, seen: false };
+    if (!window.IntersectionObserver) { state.unknown = true; return state; }
+    var io = new IntersectionObserver(function (es) {
+      var e = es[es.length - 1];
+      state.ratio = e.intersectionRatio;
+      state.seen = true;
+    }, { threshold: [0, 0.25, 0.5, 0.75, 0.9, 1] });
+    io.observe(el);
+    state.stop = function () { io.disconnect(); };
+    return state;
+  }
+
+  /* 見えるまで、少しずつ動かす。見えたらそこで止める。 */
+  function creepTo(el, target, ms) {
+    stopGlide();
+    var w = watcher(el);
+    var from = (lastTop === null) ? target : lastTop;
+    var dist = target - from;
+    if (!dist) { if (w.stop) w.stop(); tellScroll(target); return; }
+    var t0 = Date.now();
+    glide = setInterval(function () {
+      /* もう十分見えていれば、そこで打ち切る */
+      if (w.seen && w.ratio >= 0.9) { stopGlide(); if (w.stop) w.stop(); return; }
+      var k = Math.min(1, (Date.now() - t0) / ms);
+      tellScroll(Math.round(from + dist * k));
+      if (k >= 1) { stopGlide(); if (w.stop) w.stop(); }
+    }, 40);
+  }
+
   /* el が null のときは、埋めこみの先頭へ戻す。
-   * gentle を付けると、ゆっくり動く。 */
+   * gentle を付けると、見えるまでゆっくり動かす。 */
   KI.scrollToEl = function (el, gentle) {
     stopGlide();
     var top = 0;
     if (el) top = Math.max(0, Math.round(el.getBoundingClientRect().top + window.pageYOffset));
 
     if (parentListens) {
-      if (gentle) glideTo(top, 1800);
+      if (gentle && el) creepTo(el, top, 1800);
       else tellScroll(top);
       return;
     }
@@ -112,5 +151,20 @@ window.KI = window.KI || {};
      * 消された場合など）は、枠の中にスクロールがある。自分で動かす。 */
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     else window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  /* やり直しのとき、先頭がもう見えているなら動かさない。
+   * 見えていなければ先頭まで戻す。 */
+  KI.backToTop = function (markEl) {
+    stopGlide();
+    if (!parentListens) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    if (!window.IntersectionObserver || !markEl) { tellScroll(0); return; }
+    var w = watcher(markEl);
+    /* 見えているかの答えが返るのを一拍待ってから決める */
+    setTimeout(function () {
+      if (w.stop) w.stop();
+      if (w.seen && w.ratio >= 0.9) return;   /* もう見えている。動かさない */
+      tellScroll(0);
+    }, 120);
   };
 })();
