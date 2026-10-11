@@ -448,7 +448,7 @@ KI.init = function (versionId) {
      * 開始位置が少しずつずれていき、選ぶたびに下へ下がってしまう。
      * ただし、もう先頭が見えているなら動かさない。
      * 見えているのに動かすと、かえって画面が揺れる。 */
-    if (KI.backToTop) KI.backToTop(stage);
+    if (KI.backToTop) KI.backToTop();
     else scrollTo_(null, 'start');
   }
 };

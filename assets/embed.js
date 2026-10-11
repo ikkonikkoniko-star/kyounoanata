@@ -145,34 +145,38 @@ window.KI = window.KI || {};
 
   KI.scrollToEl = function (el, gentle) {
     stopGlide();
-    var top = 0;
-    if (el) {
-      top = Math.max(0, Math.round(el.getBoundingClientRect().top + window.pageYOffset) - HEAD_ROOM);
-    }
 
-    if (parentListens) {
-      if (gentle && el) creepTo(el, top, 1800);
-      else tellScroll(top);
+    if (!parentListens) {
+      /* 親が高さを合わせてくれていないとき（貼り付けたコードの script が
+       * 消された場合など）は、枠の中にスクロールがある。自分で動かす。 */
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      else window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
-    /* 親が高さを合わせてくれていないとき（貼り付けたコードの script が
-     * 消された場合など）は、枠の中にスクロールがある。自分で動かす。 */
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    else window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (!el) { KI.backToTop(); return; }
+
+    var top = Math.max(0,
+      Math.round(el.getBoundingClientRect().top + window.pageYOffset) - HEAD_ROOM);
+
+    /* もう画面に入っているなら、動かさない。
+     * 見えているのに動かすと、画面が意味もなく揺れる。 */
+    var w = watcher(el);
+    setTimeout(function () {
+      if (w.seen && w.ratio >= 0.9) { if (w.stop) w.stop(); return; }
+      if (w.stop) w.stop();
+      if (gentle) creepTo(el, top, 1800);
+      else tellScroll(top);
+    }, 120);
   };
 
-  /* やり直しのとき、先頭がもう見えているなら動かさない。
-   * 見えていなければ先頭まで戻す。 */
-  KI.backToTop = function (markEl) {
+  /* やり直しのときは、いつも埋めこみの先頭に戻す。
+   * 「もう見えているなら動かさない」にしていたが、パソコンでは
+   * イラストが左の列にいて結果を見ているあいだもずっと見えているため、
+   * いつも「動かさない」と判断してしまい、下がったまま次が始まっていた。 */
+  KI.backToTop = function () {
     stopGlide();
     if (!parentListens) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
-    if (!window.IntersectionObserver || !markEl) { tellScroll(0); return; }
-    var w = watcher(markEl);
-    /* 見えているかの答えが返るのを一拍待ってから決める */
-    setTimeout(function () {
-      if (w.stop) w.stop();
-      if (w.seen && w.ratio >= 0.9) return;   /* もう見えている。動かさない */
-      tellScroll(0);
-    }, 120);
+    /* 先頭より少し上を指して、ホームページのメニューに隠れないようにする */
+    tellScroll(-HEAD_ROOM);
   };
 })();
