@@ -130,3 +130,61 @@ stats.js を直したときだけ、HTMLの ?v=…… を変えてください�
 
   このページで選ばれた色は、協会の改善のためだけに記録しています。
   お名前など、個人を特定する情報は記録していません。
+
+
+■ 「まとめ」タブ（代表に見せる用）
+
+記録のタブはそのままだと読めないので、集計だけ見るタブを作る。
+数式が自動で計算するので、貼ったあとは何もしなくてよい。
+
+── 下ごしらえ ──
+
+(1) 記録しているタブの名前を「記録」にする
+    タブを右クリック → 名前を変更 → 記録
+
+(2) 新しいタブを足して、名前を「まとめ」にする
+    記録のタブより右に置くこと（左に置くと、そちらに記録されてしまう）
+
+── 貼るもの ──
+
+「まとめ」タブの、指定のマスに貼る。
+
+A1   きょうのKOKOいろ　まとめ
+
+A3   開いた回数
+A4   色が出た回数
+A5   選んでくれた割合
+A6   だいたいの人数
+A7   LINEから開いた割合
+
+B3   =COUNTIF(記録!B2:B,"open")
+B4   =COUNTIF(記録!B2:B,"choose")
+B5   =IFERROR(B4/B3,"")
+B6   =IFERROR(COUNTA(UNIQUE(FILTER(記録!E2:E,記録!E2:E<>""))),0)
+B7   =IFERROR(COUNTIFS(記録!B2:B,"open",記録!F2:F,"LINE")/B3,"")
+
+A9   ■ 色ランキング
+A10  =IFERROR(QUERY(記録!A2:G,"select Col4, count(Col4) where Col2='choose' and Col4 is not null and Col4 <> '' group by Col4 order by count(Col4) desc label Col4 '色', count(Col4) '回数'",0),"まだありません")
+
+D9   ■ Ver別
+D10  =IFERROR(QUERY(記録!A2:G,"select Col3, count(Col3) where Col2='choose' and Col3 <> '' group by Col3 order by count(Col3) desc label Col3 'Ver', count(Col3) '回数'",0),"まだありません")
+
+G9   ■ 日ごと
+G10  =IFERROR(QUERY(記録!A2:G,"select toDate(Col1), count(Col1) where Col1 is not null group by toDate(Col1) pivot Col2 order by toDate(Col1) desc",0),"まだありません")
+
+B5 と B7 は、マスを選んで「表示形式 → 数字 → パーセント」にすると読みやすい。
+
+── 自分たちのテスト分を除きたいとき ──
+
+数式の where のうしろに、次を足す。
+
+  and Col5 <> 'ここに通し番号'
+
+例（色ランキング）
+  where Col2='choose' and Col5 <> 'mvapravmsgk768mp' and Col4 is not null ...
+
+── 注意 ──
+
+「記録」のタブは、データより下の行に何も書かないこと。
+書くと、次の記録がその下から始まって、空行が空く。
+メモは1行目か、別のタブに。
