@@ -22,7 +22,7 @@ window.KI = window.KI || {};
 
 /* 送り先。Googleスプレッドシート側で作ったURLをここに入れる。
  * 空のままなら、このファイルは何もしない。 */
-KI.STATS_URL = '';
+KI.STATS_URL = 'https://script.google.com/macros/s/AKfycbxQPt9QY1H9z5aTgXLv_a69tw1fQKbYqIFlzsrlEX_UgxeBKoPbWlDvOKgyaTT19w8IuQ/exec';
 
 (function () {
 
