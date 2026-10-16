@@ -367,6 +367,8 @@ KI.init = function (versionId) {
 
   function show(feeling, color) {
     clearTimeout(omakeTimer);
+    /* どの色が選ばれたかを数える。送り先が決まっていなければ何も起きない。 */
+    if (KI.note) KI.note('choose', color.name);
     var data = KI.resultFor(version, color);
     figure.innerHTML = KI.renderCharacter(color, versionId);
     chipWrap.hidden = true;
